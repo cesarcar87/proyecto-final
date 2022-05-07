@@ -8,7 +8,7 @@ pipeline {
                     cd /home/peluca/proyecto/proyecto-final
                     git pull origin master
                     #Generamos dockerfile
-                    docker build -t frontend:${BUILD_NUMBER} -f nginx/Dockerfile
+                    docker build -t frontend:${BUILD_NUMBER} -f nginx/Dockerfile .
                     '''
             }
         }
