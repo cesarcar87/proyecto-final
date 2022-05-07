@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-        stage('Build') {
+        stage('Build Docker images') {
             steps {
                 sh '''#Cambiamos al directorio del proyecto
                     cd /home/peluca/proyecto/proyecto-final
@@ -12,14 +12,20 @@ pipeline {
                     '''
             }
         }
-        stage('Test') {
+        stage('Run new docker images') {
             steps {
-                echo 'Testing..'
+                sh '''#Paramos los docker corriendo actualmente en el servidor
+                    docker stop $(docker ps -a -q)
+                    #Borramos dockers antiguos
+                    docker rm $(docker ps -a -q)
+                    #Iniciamos los docker con las nuevas imágenes
+                    docker run --name front_${BUILD_NUMBER} -p 8081:80 frontend:${BUILD_NUMBER}
+                   '''
             }
         }
-        stage('Deploy') {
+        stage('Test') {
             steps {
-                echo 'Deploying....'
+                echo 'Testing....'
             }
         }
     }
