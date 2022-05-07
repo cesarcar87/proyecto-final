@@ -2,6 +2,11 @@ pipeline {
     agent any
 
     stages {
+        stage('Code Review') {
+            steps {
+                echo 'Code review....'
+            }
+        }
         stage('Build Docker images') {
             steps {
                 sh '''#Cambiamos al directorio del proyecto
@@ -28,6 +33,11 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Testing....'
+            }
+        }
+        stage('Rollback') {
+            steps {
+                echo 'Performing Rollback....'
             }
         }
     }
