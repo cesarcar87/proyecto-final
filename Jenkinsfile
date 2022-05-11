@@ -35,6 +35,11 @@ pipeline {
                 echo 'Testing....'
             }
         }
+        stage('Deploy') {
+            steps {
+                input 'Continue with deploy of ${env.BUILD_NUMBER} ?'
+            }
+        }
         stage('Rollback') {
             steps {
                 echo 'Performing Rollback....'
