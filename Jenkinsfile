@@ -34,6 +34,16 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Testing....'
+                script {
+                    try {
+                        echo 'Running tests...'
+                        sh 'exit 0'
+                    }
+                    catch (exc) {
+                        echo 'Testing failed!'
+                        currentBuild.result = 'UNSTABLE'
+                    }
+                }
             }
         }
         stage('Deploy') {
