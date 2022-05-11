@@ -39,12 +39,17 @@ pipeline {
         stage('Deploy') {
             steps {
                 input 'Continue with the deploy?'
+                doError='1'
             }
         }
-        stage('Rollback') {
-            steps {
-                echo 'Performing Rollback....'
-            }
+    }
+    post {
+        failure {
+            echo 'Rollback changes...'
+        }
+        success {
+            echo 'Version actualizada a build:${BUILD_NUMBER}'
+            mail bcc: '', body: 'Version de plataforma Gestion Tambo actualizada', cc: '', from: '', replyTo: '', subject: 'Version Actualizada', to: 'michel.rivas@estudiantes.utec.edu.uy'
         }
     }
 }
