@@ -54,9 +54,14 @@ pipeline {
     post {
         failure {
             echo 'Rollback changes...'
+            echo 'Enviando correo'
         }
         success {
             echo "Version actualizada BUILD:${BUILD_NUMBER}"
+            echo 'Enviando correo'
+        }
+        unstable {
+            echo "Version actualizada BUILD:${BUILD_NUMBER} INESTABLE"
             echo 'Enviando correo'
         }
     }
