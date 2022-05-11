@@ -5,7 +5,7 @@ pipeline {
         stage('Code Review') {
             steps {
                 echo 'Code review....'
-                input 'Continue with the pipeline for the BUILD:${BUILD_NUMBER} ?'
+                input 'Continue with the pipeline for the BUILD:\${BUILD_NUMBER} ?'
             }
         }
         stage('Build Docker images') {
@@ -38,7 +38,7 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                input 'Continue with the deploy of the BUILD:${BUILD_NUMBER} ?'
+                input 'Continue with the deploy of the BUILD:\${BUILD_NUMBER} ?'
             }
         }
         stage('Rollback') {
