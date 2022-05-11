@@ -33,11 +33,10 @@ pipeline {
         }
         stage('Test') {
             steps {
-                echo 'Testing....'
                 script {
                     try {
-                        echo 'Running tests...'
-                        sh 'exit 0'
+                        echo 'Testing...'
+                        sh 'exit 1'
                     }
                     catch (exc) {
                         echo 'Testing failed!'
