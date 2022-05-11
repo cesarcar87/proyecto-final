@@ -47,7 +47,7 @@ pipeline {
             echo 'Rollback changes...'
         }
         success {
-            echo 'Version actualizada'
+            echo "Version actualizada BUILD:${BUILD_NUMBER}"
             echo 'Enviando correo'
         }
     }
