@@ -39,7 +39,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 input 'Continue with the deploy?'
-                doError='1'
+                doError='0'
             }
         }
     }
