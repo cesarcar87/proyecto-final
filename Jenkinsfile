@@ -36,7 +36,7 @@ pipeline {
                 script {
                     try {
                         echo 'Testing...'
-                        sh 'exit 0'
+                        sh 'exit 1'
                     }
                     catch (exc) {
                         echo 'Testing failed!'
