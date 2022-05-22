@@ -16,7 +16,9 @@ services:
     environment: # Pass environment variables to the service
       SPRING_DATASOURCE_URL: jdbc:mariadb://localhost:3306/proyecto
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root    
+      SPRING_DATASOURCE_PASSWORD: root 
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.mariadb.jdbc.Driver
+      SPRING_JPA_HIBERNATE_DDL-AUTO: create-drop   
     networks: # Networks to join (Services on the same network can communicate with each other using their name)
       - backend
       - frontend
