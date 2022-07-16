@@ -14,10 +14,10 @@ services:
     depends_on: 
       - db # This service depends on mysql. Start that first.
     environment: # Pass environment variables to the service
-      SPRING_DATASOURCE_URL: jdbc:mariadb://localhost:3306/proyecto
+      SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/proyecto
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root 
-      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.mariadb.jdbc.Driver
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
       SPRING_JPA_HIBERNATE_DDL-AUTO: create-drop   
     networks: # Networks to join (Services on the same network can communicate with each other using their name)
       - backend
@@ -40,7 +40,7 @@ services:
 
   # Database Service (Mysql)
   db:
-    image: mariadb:latest
+    image: mysql:latest
     ports:
       - "3306:3306"
     restart: always
