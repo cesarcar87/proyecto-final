@@ -7,7 +7,7 @@ FROM node:12.4.0-alpine as build
 WORKDIR /app
 
 # Copy the main application
-COPY . ./
+COPY node/* ./
 
 # Arguments
 ARG REACT_APP_API_BASE_URL
