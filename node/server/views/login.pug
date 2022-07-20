@@ -4,8 +4,8 @@ extends layout
 block content
 	#login.center-vertical
 		form.card.card-body.bg-light(method='post')
-			h2 Hello!
-			h6 Please Login To Your Account
+			h2 Gestion Tambo!
+			h6 Ingrese con su cuenta
 			.form-group
 				label Username
 				input.form-control(type='text', id='user-tf', name='user')
@@ -15,16 +15,16 @@ block content
 			#row1
 				button(type='button')#btn_remember.btn.btn-light.btn-left
 					span.fa.fa-check-square
-					| Remember Me
+					| Recordar
 				button(type='submit')#btn_sign_in.btn.btn-primary
 					span.fa.fa-lock
-					| Sign In
+					| Login
 			hr
 			.btm-links
 				#forgot-password
-					a(href='#') Forgot Your Password?
+					a(href='#') Olvido contraseña?
 				#create-account
-					a(href='/signup') Create An Account
+					a(href='/signup') Crear nueva cuenta
 
 	include modals/alert
 	include modals/lost-password
