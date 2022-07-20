@@ -20,17 +20,6 @@ pipeline {
                     '''
             }
         }
-        stage('Run new docker images') {
-            steps {
-                sh '''#Paramos los docker corriendo actualmente en el servidor
-                    docker stop $(docker ps -a -q)
-                    #Borramos dockers antiguos
-                    docker rm $(docker ps -a -q)
-                    #Iniciamos los docker con las nuevas imágenes
-                    docker run --name front_${BUILD_NUMBER} -p 8081:80 -d frontend:${BUILD_NUMBER}
-                   '''
-            }
-        }
         stage('Test') {
             steps {
                 script {
@@ -48,6 +37,13 @@ pipeline {
         stage('Deploy') {
             steps {
                 input 'Continue with the deploy?'
+                sh '''#Paramos los docker corriendo actualmente en el servidor
+                    docker stop $(docker ps -a -q)
+                    #Borramos dockers antiguos
+                    docker rm $(docker ps -a -q)
+                    #Iniciamos los docker con las nuevas imágenes
+                    docker run --name front_${BUILD_NUMBER} -p 8081:3000 -d frontend:${BUILD_NUMBER}
+                   '''
             }
         }
     }
