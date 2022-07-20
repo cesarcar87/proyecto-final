@@ -14,7 +14,7 @@ pipeline {
                     cd /home/utec/proyecto/proyecto-final
                     git pull origin master
                     #Generamos dockerfile
-                    docker build -t frontend:${BUILD_NUMBER} -f nginx/Dockerfile .
+                    docker build -t frontend:${BUILD_NUMBER} -f node/Dockerfile .
                     docker build -t backend:${BUILD_NUMBER} -f springBoot/Dockerfile .
                     docker build -t database:${BUILD_NUMBER} -f mariaDb/Dockerfile .
                     '''
