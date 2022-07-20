@@ -6,17 +6,18 @@ FROM node:12.4.0-alpine as build
 # commands.
 WORKDIR /app
 
-COPY node/package.json node/package-lock.json ./
+#COPY node/package.json node/package-lock.json ./
 
 # Copy the main application
-COPY node/* ./
+COPY ./node/. ./
 
 RUN npm install
-
+RUN apk add bash
 # Arguments
 ARG REACT_APP_API_BASE_URL
 ENV REACT_APP_API_BASE_URL=${REACT_APP_API_BASE_URL}
 
-EXPOSE 3000
+EXPOSE 8080
 
 CMD ["npm", "start"]
+#ENTRYPOINT ["/usr/bin/tail", "-f", "/dev/null"]

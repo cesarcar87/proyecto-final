@@ -42,7 +42,7 @@ pipeline {
                     #Borramos dockers antiguos
                     docker rm $(docker ps -a -q)
                     #Iniciamos los docker con las nuevas imágenes
-                    docker run --name front_${BUILD_NUMBER} -p 8081:3000 -d frontend:${BUILD_NUMBER}
+                    docker run --name front_${BUILD_NUMBER} -p 8081:8080 -d frontend:${BUILD_NUMBER}
                    '''
             }
         }
