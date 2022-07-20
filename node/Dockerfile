@@ -6,6 +6,8 @@ FROM node:12.4.0-alpine as build
 # commands.
 WORKDIR /app
 
+COPY node/package.json node/package-lock.json ./
+
 # Copy the main application
 COPY node/* ./
 
