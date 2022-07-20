@@ -12,6 +12,7 @@ COPY node/package.json node/package-lock.json ./
 COPY node/* ./
 
 RUN npm install
+
 # Arguments
 ARG REACT_APP_API_BASE_URL
 ENV REACT_APP_API_BASE_URL=${REACT_APP_API_BASE_URL}
