@@ -26,7 +26,7 @@ pipeline {
                 script {
                     try {
                         echo 'Testing...'
-                        sh 'exit 1'
+                        sh 'exit 0'
                     }
                     catch (exc) {
                         echo 'Testing failed!'
@@ -53,14 +53,14 @@ pipeline {
     post {
         failure {
             echo 'Rollback changes...'
-            echo 'Enviando correo'
+            emailext body: "Fallo en build de la version ${BUILD_NUMBER}", subject: "Fallo en deploy version ${BUILD_NUMBER}", to: 'michel.rivas@estudiantes.utec.edu.uy'
         }
         success {
             echo "Version actualizada BUILD:${BUILD_NUMBER}"
-            echo 'Enviando correo'
+            emailext body: "Se realizo el deploy de la aplicacion version ${BUILD_NUMBER}", subject: "Deploy version ${BUILD_NUMBER}", to: 'michel.rivas@estudiantes.utec.edu.uy'
         }
         unstable {
-            echo "Version actualizada BUILD:${BUILD_NUMBER} INESTABLE"
+            emailext body: "Se realizo el deploy de la aplicacion version ${BUILD_NUMBER} ${currentBuild.result}", subject: "Deploy ${currentBuild.result} version ${BUILD_NUMBER}", to: 'michel.rivas@estudiantes.utec.edu.uy'
             echo 'Enviando correo'
         }
     }
