@@ -6,6 +6,7 @@ pipeline {
             steps {
                 echo 'Code review....'
                 input 'Continue with the pipeline ?'
+                emailext body: "El code review de la aplicacion fue satisfactorio. Version build ${BUILD_NUMBER}", subject: "Code Review status version ${BUILD_NUMBER}", to: 'michel.rivas@estudiantes.utec.edu.uy'
             }
         }
         stage('Build Docker images') {
@@ -25,11 +26,13 @@ pipeline {
                 script {
                     try {
                         echo 'Testing...'
+                        emailext body: "El testing fue satisfactorio. Version build ${BUILD_NUMBER}", subject: "Testing Success - Version ${BUILD_NUMBER}", to: 'michel.rivas@estudiantes.utec.edu.uy'
                         sh 'exit 0'
                     }
                     catch (exc) {
                         echo 'Testing failed!'
                         currentBuild.result = 'UNSTABLE'
+                        emailext body: "El testing presenta inconvenientes. Version build ${BUILD_NUMBER}", subject: "Testing - Build Inestable ${BUILD_NUMBER}", to: 'michel.rivas@estudiantes.utec.edu.uy'
                     }
                 }
             }
@@ -44,7 +47,7 @@ pipeline {
                     #Iniciamos los docker con las nuevas imágenes
                     docker run --name front_${BUILD_NUMBER} -p 8081:8080 -d frontend:${BUILD_NUMBER}
                    '''
-		emailext body: 'Se realizo el deploy de la aplicacion', subject: 'Deploy generado', to: 'michel.rivas@estudiantes.utec.edu.uy'
+		emailext body: "Se realizo el deploy de la aplicacion version ${BUILD_NUMBER}", subject: "Deploy version ${BUILD_NUMBER}", to: 'michel.rivas@estudiantes.utec.edu.uy'
             }
         }
     }
