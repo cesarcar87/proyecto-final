@@ -27,7 +27,7 @@ pipeline {
                     try {
                         echo 'Testing...'
                         emailext body: "El testing fue satisfactorio. Version build ${BUILD_NUMBER}", subject: "Testing Success - Version ${BUILD_NUMBER}", to: 'michel.rivas@estudiantes.utec.edu.uy'
-                        sh 'exit 0'
+                        sh 'exit 1'
                     }
                     catch (exc) {
                         echo 'Testing failed!'
