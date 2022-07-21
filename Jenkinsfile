@@ -5,8 +5,8 @@ pipeline {
         stage('Code Review') {
             steps {
                 echo 'Code review....'
-                input 'Continue with the pipeline ?'
                 emailext body: "El code review de la aplicacion fue satisfactorio. Version build ${BUILD_NUMBER}", subject: "Code Review status version ${BUILD_NUMBER}", to: 'michel.rivas@estudiantes.utec.edu.uy'
+                input 'Continue with the pipeline ?'
             }
         }
         stage('Build Docker images') {
