@@ -3,6 +3,7 @@ html {
 }
 body {
   margin: 0;
+  background-color: #01101f;
   padding: 0;
   height: 100%;
   background-image: radial-gradient(circle, #db652e, #db652e, #db652e, #db652e, #db652e);
