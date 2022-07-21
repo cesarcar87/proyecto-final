@@ -44,7 +44,7 @@ pipeline {
                     #Iniciamos los docker con las nuevas imágenes
                     docker run --name front_${BUILD_NUMBER} -p 8081:8080 -d frontend:${BUILD_NUMBER}
                    '''
-		emailext body: 'Finaliza el deploy de la aplicacion', recipientProviders: ['michel.rivas@estudiantes.utec.edu.uy'], subject: 'Deploy finalizado de version ${BUILD_NUMBER}'
+		emailext body: 'A Test EMail', recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: 'Test'
             }
         }
     }
