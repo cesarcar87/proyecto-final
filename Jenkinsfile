@@ -31,13 +31,14 @@ pipeline {
                     catch (exc) {
                         echo 'Testing failed!'
                         currentBuild.result = 'UNSTABLE'
+                        currentBuild.currentResult = 'UNSTABLE'
                     }
                 }
             }
         }
         stage('Deploy') {
             steps {
-                emailext body: "El testing presenta status ${currentBuild.result}. Version build ${BUILD_NUMBER}", subject: "Testing ${currentBuild.result}- Build ${BUILD_NUMBER}", to: 'michel.rivas@estudiantes.utec.edu.uy'
+                emailext body: "El testing presenta status ${currentBuild.currentResult}. Version build ${BUILD_NUMBER}", subject: "Testing ${currentBuild.result}- Build ${BUILD_NUMBER}", to: 'michel.rivas@estudiantes.utec.edu.uy'
                 input 'Continue with the deploy?'
                 sh '''#Paramos los docker corriendo actualmente en el servidor
                     docker stop $(docker ps -a -q)
@@ -59,7 +60,7 @@ pipeline {
             emailext body: "Se realizo el deploy de la aplicacion version ${BUILD_NUMBER}", subject: "Deploy version ${BUILD_NUMBER}", to: 'michel.rivas@estudiantes.utec.edu.uy'
         }
         unstable {
-            emailext body: "Se realizo el deploy de la aplicacion version ${BUILD_NUMBER} ${currentBuild.result}", subject: "Deploy ${currentBuild.result} version ${BUILD_NUMBER}", to: 'michel.rivas@estudiantes.utec.edu.uy'
+            emailext body: "Se realizo el deploy de la aplicacion version ${BUILD_NUMBER} ${currentBuild.currentResult}", subject: "Deploy ${currentBuild.currentResult} version ${BUILD_NUMBER}", to: 'michel.rivas@estudiantes.utec.edu.uy'
             echo 'Enviando correo'
         }
     }
