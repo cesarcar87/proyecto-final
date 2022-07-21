@@ -31,13 +31,13 @@ pipeline {
                     catch (exc) {
                         echo 'Testing failed!'
                         currentBuild.result = 'UNSTABLE'
-                        emailext body: "El testing presenta inconvenientes. Version build ${BUILD_NUMBER}", subject: "Testing - Build Inestable ${BUILD_NUMBER}", to: 'michel.rivas@estudiantes.utec.edu.uy'
                     }
                 }
             }
         }
         stage('Deploy') {
             steps {
+                emailext body: "El testing presenta status ${currentBuild.result}. Version build ${BUILD_NUMBER}", subject: "Testing ${currentBuild.result}- Build ${BUILD_NUMBER}", to: 'michel.rivas@estudiantes.utec.edu.uy'
                 input 'Continue with the deploy?'
                 sh '''#Paramos los docker corriendo actualmente en el servidor
                     docker stop $(docker ps -a -q)
