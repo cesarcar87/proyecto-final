@@ -32,6 +32,7 @@ h6 {
 */
 #login {
   width: 380px;
+  background-color: #01101f;
 }
 #login .btn {
   float: left;
