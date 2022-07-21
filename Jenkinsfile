@@ -38,7 +38,7 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                emailext body: "El testing presenta status ${currentBuild.currentResult}. Version build ${BUILD_NUMBER}", subject: "Testing ${currentBuild.result}- Build ${BUILD_NUMBER}", to: 'michel.rivas@estudiantes.utec.edu.uy'
+                emailext body: "El testing presenta status ${currentBuild.currentResult}. Version build ${BUILD_NUMBER}", subject: "Testing ${currentBuild.currentResult}- Build ${BUILD_NUMBER}", to: 'michel.rivas@estudiantes.utec.edu.uy'
                 input 'Continue with the deploy?'
                 sh '''#Paramos los docker corriendo actualmente en el servidor
                     docker stop $(docker ps -a -q)
