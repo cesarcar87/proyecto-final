@@ -5,8 +5,7 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
-  /*background-image: radial-gradient(circle, #f2f9fe, #ebf7fe, #e5f4fe, #ddf2fe, #fafdd6);*/
-  background-image: radial-gradient(circle, #f3aa0c, #ecd823, #c5a827, #e9e62b, #daeb1e);
+  background-image: radial-gradient(circle, #f2f9fe, #ebf7fe, #e5f4fe, #ddf2fe, #fafdd6);
 }
 h2 {
   margin: 0 0 6px 0;
@@ -45,14 +44,14 @@ h6 {
   margin-right: 4%;
 }
 #login #btn_sign_in {
-  color: #fff;
+  color: rgb(218, 49, 27);
 }
 #login #btn_remember {
-  background: #fff;
-  border: 1px solid #ced4da;
+  background: rgb(7, 29, 128);
+  border: 1px solid #01101f;
 }
 #login #btn_remember:hover {
-  background: #f8f9fa;
+  background: #25b918;
 }
 #login h6,
 #login label {
