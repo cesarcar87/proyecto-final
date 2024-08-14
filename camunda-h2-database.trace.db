@@ -1,0 +1,45 @@
+2024-08-13 23:18:08.379012-03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabla "ACT_RU_EXT_TASK" no encontrada
+Table "ACT_RU_EXT_TASK" not found; SQL statement:
+select count(distinct RES.ID_ )
+     
+    from (
+    select RES.*, PI.BUSINESS_KEY_, PD.VERSION_TAG_
+    from ACT_RU_EXT_TASK RES
+    
+    left join ACT_RU_EXECUTION PI on RES.PROC_INST_ID_ = PI.ID_
+    left join ACT_RE_PROCDEF PD on RES.PROC_DEF_ID_ = PD.ID_
+
+     
+     WHERE  RES.PROC_INST_ID_ = ? 
+    ) RES [42102-224]
+2024-08-13 23:29:23.471922-03:00 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabla "ACT_RU_EXT_TASK" no encontrada
+Table "ACT_RU_EXT_TASK" not found; SQL statement:
+select count(distinct RES.ID_ )
+     
+    from (
+    select RES.*, PI.BUSINESS_KEY_, PD.VERSION_TAG_
+    from ACT_RU_EXT_TASK RES
+    
+    left join ACT_RU_EXECUTION PI on RES.PROC_INST_ID_ = PI.ID_
+    left join ACT_RE_PROCDEF PD on RES.PROC_DEF_ID_ = PD.ID_
+
+     
+     WHERE  RES.PROC_INST_ID_ = ? 
+    ) RES [42102-224]
+2024-08-14 00:02:42.947349-03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabla "ACT_RU_EXT_TASK" no encontrada
+Table "ACT_RU_EXT_TASK" not found; SQL statement:
+select count(distinct RES.ID_ )
+     
+    from (
+    select RES.*, PI.BUSINESS_KEY_, PD.VERSION_TAG_
+    from ACT_RU_EXT_TASK RES
+    
+    left join ACT_RU_EXECUTION PI on RES.PROC_INST_ID_ = PI.ID_
+    left join ACT_RE_PROCDEF PD on RES.PROC_DEF_ID_ = PD.ID_
+
+     
+     WHERE  RES.PROC_INST_ID_ = ? 
+    ) RES [42102-224]

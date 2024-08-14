@@ -1,0 +1,36 @@
+spring.datasource.url: jdbc:h2:file:./camunda-h2-database
+
+camunda.bpm.admin-user:
+  id: demo
+  password: demo
+
+camunda.bpm:
+  deployment-resource-pattern:
+    - classpath*:**/*.bpmn
+    - classpath*:**/*.bpmn20.xml
+    - classpath*:**/*.dmn
+    - classpath*:**/*.dmn11.xml
+    - classpath*:**/*.form
+##spring:
+##  datasource:
+##    url: jdbc:postgresql://localhost:5432/gestionestudiantil
+##    username: postgres
+##    password: admin
+##    driver-class-name: org.postgresql.Driver
+##
+##  jpa:
+##    database-platform: org.hibernate.dialect.PostgreSQLDialect
+##    show-sql: true
+##    hibernate:
+##      ddl-auto: update
+##
+##  camunda:
+##    bpm:
+##      database:
+##        type: postgres
+##      schema-update: true  # Actualiza el esquema de la base de datos automáticamente
+##      job-execution:
+##        enabled: true  # Habilita la ejecución de jobs
+##      webapp:
+##        enabled: true  # Habilita la interfaz de usuario de Camunda
+##
