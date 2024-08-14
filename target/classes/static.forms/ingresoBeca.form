@@ -1,0 +1,84 @@
+{
+  "components": [
+    {
+      "label": "Nombre",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_00785uv",
+        "columns": null
+      },
+      "id": "Field_0p9r646",
+      "key": "nombre"
+    },
+    {
+      "label": "Documento",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1c5kulz",
+        "columns": null
+      },
+      "id": "Field_1jpokfe",
+      "key": "documento"
+    },
+    {
+      "label": "Correo",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1u5nv7d",
+        "columns": null
+      },
+      "id": "Field_106l3ww",
+      "key": "correo"
+    },
+    {
+      "label": "Telefono",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1rjz8l5",
+        "columns": null
+      },
+      "id": "Field_0b8g25u",
+      "key": "telefono"
+    },
+    {
+      "label": "Otras Becas",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_19wtxkl",
+        "columns": null
+      },
+      "id": "Field_02acs7t",
+      "key": "otrasBecas",
+      "defaultValue": "ninguna"
+    },
+    {
+      "label": "Carrera",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1998a4t",
+        "columns": null
+      },
+      "id": "Field_0ojxt4e",
+      "key": "carrera"
+    },
+    {
+      "label": "Sede de itr",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0e9slgn",
+        "columns": null
+      },
+      "id": "Field_0hxue6x",
+      "key": "textfield_ddd0f"
+    }
+  ],
+  "type": "default",
+  "id": "IngresoBeca",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.25.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.21.0",
+  "schemaVersion": 16
+}
