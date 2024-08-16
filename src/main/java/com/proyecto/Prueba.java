@@ -1,11 +1,22 @@
 package com.proyecto;
-import com.fabdelgado.ciuy.*;
-import static com.proyecto.estudiante.ValidarDatos.validarDatos;
 
-import com.proyecto.sistema.MandarMail;
-import com.proyecto.sistema.MandarMail.*;
+import com.proyecto.PruebaService;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+
+@SpringBootApplication
+public class Prueba {
+
+    public static void main(String[] args) {
+        ApplicationContext context = SpringApplication.run(Prueba.class, args);
+        PruebaService pruebaService = context.getBean(PruebaService.class);
+        pruebaService.runPrueba();
+    }
+}
 
 
+/*
 public class Prueba {
     public static void main(String... args) {
         String nombre = "Juan Pérez";
@@ -17,6 +28,22 @@ public class Prueba {
         String itr = "Centro Universitario"; // Nombre de un instituto o centro.
         String estadoBeca = "ingresada";
         String error = null; // Inicialmente, sin errores.
+
+        GestEstRepository gestEstRepository;
+        Estudiante estPrueba = new Estudiante();
+
+        estPrueba.setUsuario("jdoe123");
+        estPrueba.setNombre("John");
+        estPrueba.setApellido("Doe");
+        estPrueba.setTipoDocumento("DNI");
+        estPrueba.setDocumento("12345678");
+        estPrueba.setCorreo("johndoe@example.com");
+        estPrueba.setPais("Argentina");
+        estPrueba.setLocalidad("Buenos Aires");
+        estPrueba.setCarrera("Ingeniería en Sistemas");
+        estPrueba.setItr("Central");
+
+        gestEstRepository.save(estPrueba);
 
 
         estadoBeca = validarDatos(nombre,documento,correo,telefono,otrasBecas,carrera,itr);
@@ -31,4 +58,4 @@ public class Prueba {
         mandarMail.envioDeMail(mailDestino,mailAsunto,mailMensaje);
 
     }
-}
+}*/
