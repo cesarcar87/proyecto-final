@@ -86,16 +86,56 @@
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>42.7.2</version> <!-- Verifica la última versión disponible -->
+      <version>42.7.2</version>
     </dependency>
   </dependencies>
 
   <build>
     <plugins>
+      <!-- Plugin de Spring Boot -->
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <version>3.2.2</version>
+        <configuration>
+          <mainClass>com.proyecto.sistema.Application</mainClass> <!-- Ajusta con tu clase principal -->
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Plugin de Maven Compiler -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <source>17</source> <!-- Ajusta según la versión de Java que estés usando -->
+          <target>17</target> <!-- Ajusta según la versión de Java que estés usando -->
+          <compilerArgs>
+            <arg>-parameters</arg>
+          </compilerArgs>
+        </configuration>
+      </plugin>
+
+      <!-- Plugin de Maven Jar para incluir el Main-Class en el MANIFEST -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.2.2</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <mainClass>com.proyecto.sistema.Application</mainClass> <!-- Asegúrate de usar tu clase principal -->
+            </manifest>
+          </archive>
+        </configuration>
       </plugin>
     </plugins>
   </build>

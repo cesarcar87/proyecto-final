@@ -1,12 +1,3 @@
-##	spring.datasource.url: jdbc:h2:file:./camunda-h2-database
-##
-##	camunda.bpm.admin-user:
-##	  id: demo
-##	  password: demo
-##
-##	camunda.bpm:
-
-
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/gestionestudiantil
@@ -18,7 +9,7 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create-drop  # Cambia a 'update' en lugar de 'create-drop' para no perder datos en cada inicio
 
   camunda:
     deployment-resource-pattern:
@@ -30,8 +21,13 @@ spring:
     bpm:
       database:
         type: postgres
-      schema-update: true  # Actualiza el esquema de la base de datos automáticamente
+      schema-update: true  # Mantén esto según tus necesidades
       job-execution:
-        enabled: true  # Habilita la ejecución de jobs
+        enabled: true  # Asegúrate de que la ejecución de jobs esté habilitada si lo necesitas
       webapp:
-        enabled: true  # Habilita la interfaz de usuario de Camunda
+        enabled: true  # Habilita la interfaz de usuario de Camunda si es necesario
+      admin-user:  # Agregar usuario administrador de Camunda
+
+    camunda.bpm.admin-user:
+      id: demo
+      password: demo
