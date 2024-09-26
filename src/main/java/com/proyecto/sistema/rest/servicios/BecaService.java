@@ -23,9 +23,9 @@ public class BecaService {
         return getBecRespository.findAll();
     }
 
-    @GetMapping
-    public List<Becas> obtenerBecaPorEstudiante(Long estudiante) {
-        return (List<Becas>) getBecRespository.findByEstudiante(estudiante);
+    public List<Becas> obtenerBecaPorEstudiante(Long estudianteId) {
+        // Deberías retornar una lista de becas
+        return getBecRespository.findByEstudiante(estudianteId);
     }
 
     // Crear una nueva Beca

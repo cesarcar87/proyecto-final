@@ -13,6 +13,7 @@ public class Becas {
     private Long[] otrasBecas;
     private Boolean reqLlamado;
     private String estadoBeca;
+    private String tipoBeca;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true) // Relación OneToMany con los documentos
     private List<Documento> documentosPDF; // Lista de documentos PDF (entidad separada)
@@ -65,5 +66,13 @@ public class Becas {
 
     public void setDocumentosPDF(List<Documento> documentosPDF) {
         this.documentosPDF = documentosPDF;
+    }
+
+    public String getTipoBeca() {
+        return tipoBeca;
+    }
+
+    public void setTipoBeca(String tipoBeca) {
+        this.tipoBeca = tipoBeca;
     }
 }
