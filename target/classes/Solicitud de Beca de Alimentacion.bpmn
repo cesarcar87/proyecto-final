@@ -17,7 +17,6 @@
         <bpmn:childLaneSet id="LaneSet_04u4hco" />
       </bpmn:lane>
       <bpmn:lane id="Lane_16rplbd" name="Coordinador">
-        <bpmn:flowNodeRef>Activity_0ers12d</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_1abqfab</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_08mgmf2</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_1o7joew</bpmn:flowNodeRef>
@@ -25,6 +24,8 @@
         <bpmn:flowNodeRef>postDefinicionEntrevista</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_17tozik</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_0d3phny</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0ers12d</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1y78euk</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:exclusiveGateway id="postIngresoDocumentos">
@@ -35,10 +36,6 @@
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>Flow_1cqp40e</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:userTask id="Activity_0ers12d" name="Definicion de fechas para entrevista">
-      <bpmn:incoming>Flow_0h1lvi0</bpmn:incoming>
-      <bpmn:outgoing>Flow_0k2smu4</bpmn:outgoing>
-    </bpmn:userTask>
     <bpmn:userTask id="Ingreso_Beca" name="Ingreso de solicitud y datos" camunda:formRef="IngresoBeca" camunda:formRefBinding="deployment">
       <bpmn:extensionElements />
       <bpmn:incoming>Flow_1cqp40e</bpmn:incoming>
@@ -58,9 +55,7 @@
       <bpmn:outgoing>Flow_1k8jlft</bpmn:outgoing>
     </bpmn:sendTask>
     <bpmn:endEvent id="Event_1abqfab" name="Rechazo de solicitud de Beca">
-      <bpmn:incoming>Flow_0xz81lf</bpmn:incoming>
-      <bpmn:incoming>Flow_1jncsj9</bpmn:incoming>
-      <bpmn:incoming>Flow_06it5r1</bpmn:incoming>
+      <bpmn:incoming>Flow_1dcbls8</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:endEvent id="Event_064ex1p" name="Solicitud de Beca satisfactoria">
       <bpmn:incoming>Flow_1k8jlft</bpmn:incoming>
@@ -101,27 +96,31 @@
       <bpmn:outgoing>Flow_079u7ev</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1g7z76i" sourceRef="Activity_08mgmf2" targetRef="postIngresoDocumentos" />
-    <bpmn:sequenceFlow id="Flow_1jncsj9" name="Rechazado" sourceRef="postIngresoDocumentos" targetRef="Event_1abqfab">
+    <bpmn:sequenceFlow id="Flow_1jncsj9" name="Rechazado" sourceRef="postIngresoDocumentos" targetRef="Activity_1y78euk">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{estadoBeca=="Rechazado"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0h1lvi0" name="Aceptado" sourceRef="postIngresoDocumentos" targetRef="Activity_0ers12d">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{estadoBeca=="definirFechas"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1cqp40e" sourceRef="StartEvent_1" targetRef="Ingreso_Beca" />
-    <bpmn:sequenceFlow id="Flow_0k2smu4" sourceRef="Activity_0ers12d" targetRef="Activity_0d3phny" />
+    <bpmn:sequenceFlow id="Flow_0k2smu4" sourceRef="Activity_0ers12d" targetRef="Activity_0d3phny">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{estadoBeca=="esperandoReunion"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0alg0jp" sourceRef="Ingreso_Beca" targetRef="Activity_09dtpt0" />
     <bpmn:sequenceFlow id="Flow_0wzuh38" sourceRef="Activity_09dtpt0" targetRef="Activity_08mgmf2">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{estadoBeca=="pasaValidDocs"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0a03sp5" sourceRef="Activity_1o7joew" targetRef="postValidacionDirector" />
-    <bpmn:sequenceFlow id="Flow_0xz81lf" sourceRef="postValidacionDirector" targetRef="Event_1abqfab">
+    <bpmn:sequenceFlow id="Flow_0xz81lf" sourceRef="postValidacionDirector" targetRef="Activity_1y78euk">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{estadoBeca=="Rechazado"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1pgm2xy" sourceRef="postValidacionDirector" targetRef="Activity_1396lo8">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{paso}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1k8jlft" sourceRef="Activity_1396lo8" targetRef="Event_064ex1p" />
-    <bpmn:sequenceFlow id="Flow_06it5r1" sourceRef="postDefinicionEntrevista" targetRef="Event_1abqfab">
+    <bpmn:sequenceFlow id="Flow_1k8jlft" sourceRef="Activity_1396lo8" targetRef="Event_064ex1p">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{estadoBeca=="NotificadoAceptado"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_06it5r1" sourceRef="postDefinicionEntrevista" targetRef="Activity_1y78euk">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{estadoBeca=="Rechazado"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_12bybob" sourceRef="Activity_1sjjpm6" targetRef="Activity_1o7joew" />
@@ -129,7 +128,22 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{estadoBeca=="enviarMail"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1nx8ibk" sourceRef="Activity_17tozik" targetRef="postDefinicionEntrevista" />
-    <bpmn:sequenceFlow id="Flow_079u7ev" sourceRef="Activity_0d3phny" targetRef="Activity_17tozik" />
+    <bpmn:sequenceFlow id="Flow_079u7ev" sourceRef="Activity_0d3phny" targetRef="Activity_17tozik">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{estadoBeca=="esperandoResultado"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Activity_0ers12d" name="Definicion de fechas para entrevista" camunda:delegateExpression="#{definirFechas}">
+      <bpmn:incoming>Flow_0h1lvi0</bpmn:incoming>
+      <bpmn:outgoing>Flow_0k2smu4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1dcbls8" sourceRef="Activity_1y78euk" targetRef="Event_1abqfab">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{estadoBeca=="NotificadoRechazo"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sendTask id="Activity_1y78euk" name="Notifica sobre cancelacion de beca" camunda:delegateExpression="#{mandarMail}">
+      <bpmn:incoming>Flow_1jncsj9</bpmn:incoming>
+      <bpmn:incoming>Flow_06it5r1</bpmn:incoming>
+      <bpmn:incoming>Flow_0xz81lf</bpmn:incoming>
+      <bpmn:outgoing>Flow_1dcbls8</bpmn:outgoing>
+    </bpmn:sendTask>
   </bpmn:process>
   <bpmn:message id="Message_2kdmttt" name="Message_2kdmttt" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -138,12 +152,12 @@
         <dc:Bounds x="157" y="125" width="2035" height="400" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Lane_03u8o45_di" bpmnElement="Lane_03u8o45" isHorizontal="true">
-        <dc:Bounds x="187" y="125" width="2005" height="190" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_16rplbd_di" bpmnElement="Lane_16rplbd" isHorizontal="true">
         <dc:Bounds x="187" y="315" width="2005" height="210" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_03u8o45_di" bpmnElement="Lane_03u8o45" isHorizontal="true">
+        <dc:Bounds x="187" y="125" width="2005" height="190" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0ssxkhm_di" bpmnElement="postIngresoDocumentos" isMarkerVisible="true">
@@ -151,10 +165,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="234" y="207" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1fli46v_di" bpmnElement="Activity_0ers12d">
-        <dc:Bounds x="892" y="325" width="100" height="80" />
-        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_19g39c3_di" bpmnElement="Ingreso_Beca">
         <dc:Bounds x="332" y="185" width="100" height="80" />
@@ -203,6 +213,13 @@
         <dc:Bounds x="1060" y="325" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0bftib2_di" bpmnElement="Activity_0ers12d">
+        <dc:Bounds x="892" y="325" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0n44g6y_di" bpmnElement="Activity_1y78euk">
+        <dc:Bounds x="1882" y="425" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1g7z76i_di" bpmnElement="Flow_1g7z76i">
         <di:waypoint x="670" y="325" />
         <di:waypoint x="670" y="225" />
@@ -211,9 +228,9 @@
       <bpmndi:BPMNEdge id="Flow_1jncsj9_di" bpmnElement="Flow_1jncsj9">
         <di:waypoint x="822" y="250" />
         <di:waypoint x="822" y="465" />
-        <di:waypoint x="2094" y="465" />
+        <di:waypoint x="1882" y="465" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1454" y="473" width="56" height="14" />
+          <dc:Bounds x="1388" y="473" width="56" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0h1lvi0_di" bpmnElement="Flow_0h1lvi0">
@@ -249,7 +266,7 @@
       <bpmndi:BPMNEdge id="Flow_0xz81lf_di" bpmnElement="Flow_0xz81lf">
         <di:waypoint x="1782" y="215" />
         <di:waypoint x="1782" y="465" />
-        <di:waypoint x="2094" y="465" />
+        <di:waypoint x="1882" y="465" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1pgm2xy_di" bpmnElement="Flow_1pgm2xy">
         <di:waypoint x="1807" y="190" />
@@ -262,7 +279,7 @@
       <bpmndi:BPMNEdge id="Flow_06it5r1_di" bpmnElement="Flow_06it5r1">
         <di:waypoint x="1360" y="390" />
         <di:waypoint x="1360" y="465" />
-        <di:waypoint x="2094" y="465" />
+        <di:waypoint x="1882" y="465" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_12bybob_di" bpmnElement="Flow_12bybob">
         <di:waypoint x="1560" y="365" />
@@ -282,6 +299,10 @@
       <bpmndi:BPMNEdge id="Flow_079u7ev_di" bpmnElement="Flow_079u7ev">
         <di:waypoint x="1160" y="365" />
         <di:waypoint x="1210" y="365" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1dcbls8_di" bpmnElement="Flow_1dcbls8">
+        <di:waypoint x="1982" y="465" />
+        <di:waypoint x="2094" y="465" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -9,25 +9,25 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
     hibernate:
-      ddl-auto: create-drop  # Cambia a 'update' en lugar de 'create-drop' para no perder datos en cada inicio
+      ddl-auto: create-drop  # Cambia 'create-drop' a 'update' para no perder datos
 
-  camunda:
-    deployment-resource-pattern:
-      - classpath*:**/*.bpmn
-      - classpath*:**/*.bpmn20.xml
-      - classpath*:**/*.dmn
-      - classpath*:**/*.dmn11.xml
-      - classpath*:**/*.form
-    bpm:
-      database:
-        type: postgres
-      schema-update: true  # Mantén esto según tus necesidades
-      job-execution:
-        enabled: true  # Asegúrate de que la ejecución de jobs esté habilitada si lo necesitas
-      webapp:
-        enabled: true  # Habilita la interfaz de usuario de Camunda si es necesario
-      admin-user:  # Agregar usuario administrador de Camunda
-
-    camunda.bpm.admin-user:
-      id: demo
-      password: demo
+camunda:
+  deployment-resource-pattern:
+    - classpath*:**/*.bpmn
+    - classpath*:**/*.bpmn20.xml
+    - classpath*:**/*.dmn
+    - classpath*:**/*.dmn11.xml
+    - classpath*:**/*.form
+  bpm:
+    database:
+      type: postgres
+    schema-update: true
+    job-execution:
+      enabled: true
+    webapp:
+      enabled: true
+    admin-user:
+      id: demo  # Crear un usuario administrador con ID 'demo'
+      password: demo  # Password para el usuario administrador
+    rest:
+      enabled: true  # Asegúrate de que la API REST esté habilitada
