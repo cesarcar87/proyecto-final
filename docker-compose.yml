@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+    ports:
+      - "8080:8080"  # Mapea el puerto 8080 del contenedor al puerto 8080 en tu máquina local
+    depends_on:
+      - postgres  # Asegura que PostgreSQL se inicie antes de la aplicación
+    networks:
+      - app-network  # Conecta la app a la red para que pueda comunicarse con PostgreSQL
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/gestionestudiantil  # La URL de conexión usa el puerto interno de PostgreSQL
+      SPRING_DATASOURCE_USERNAME: postgres  # Usuario de PostgreSQL
+      SPRING_DATASOURCE_PASSWORD: admin  # Contraseña de PostgreSQL
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update  # Configuración de Hibernate
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: gestionestudiantil  # Nombre de la base de datos
+      POSTGRES_USER: postgres  # Usuario de la base de datos
+      POSTGRES_PASSWORD: admin  # Contraseña del usuario de la base de datos
+    ports:
+      - "5432:5432"  # Mapea el puerto 5433 del contenedor al puerto 5433 en tu máquina local
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Volumen para persistir los datos de la base de datos
+    networks:
+      - app-network  # Conecta PostgreSQL a la red app-network
+
+networks:
+  app-network:
+    driver: bridge  # Red de tipo bridge para la comunicación entre contenedores
+
+volumes:
+  postgres_data:
+    driver: local  # Volumen para almacenar datos de PostgreSQL de manera persistente

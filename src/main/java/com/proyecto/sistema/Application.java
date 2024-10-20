@@ -1,4 +1,5 @@
 package com.proyecto.sistema;
+import com.proyecto.servicios.GoogleMailApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import com.proyecto.sistema.clases.usuarios.Estudiante;
@@ -14,7 +15,6 @@ public class Application {
     //SpringApplication.run(Application.class, args);
     // Inicia la aplicación Spring Boot y obtiene el contexto de la aplicación
     ApplicationContext context = SpringApplication.run(Application.class, args);
-
   }
 
 }

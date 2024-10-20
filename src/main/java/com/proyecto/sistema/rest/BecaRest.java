@@ -1,5 +1,6 @@
 package com.proyecto.sistema.rest;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.proyecto.sistema.configuration.MyCorsConfiguration;
 import com.proyecto.sistema.clases.DTO.BecaDTO;
@@ -132,12 +133,44 @@ public class BecaRest {
             // URL del proceso en Camunda
             String camundaUrl = "http://localhost:8080/engine-rest/process-definition/key/gestionBecaAlimentacion/start";
 
+            System.out.println("Antes");
+
             // Enviar la solicitud a Camunda
             ResponseEntity<String> response = restTemplate.postForEntity(camundaUrl, body, String.class);
 
+            System.out.println("Despues");
+
             // Verificar si la respuesta es satisfactoria
             if (response.getStatusCode().is2xxSuccessful()) {
-                System.out.println("Proceso de beca de alimentación iniciado en Camunda");
+
+                System.out.println("Principio");
+
+                // Parsear la respuesta para obtener el processInstanceId
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode rootNode = mapper.readTree(response.getBody());
+                String processInstanceId = rootNode.path("id").asText();  // Obtener el processInstanceId
+
+                System.out.println("Aqui?");
+
+                // Usar el processInstanceId para obtener el executionId
+                String executionUrl = "http://localhost:8080/engine-rest/execution?processInstanceId=" + processInstanceId;
+                ResponseEntity<String> executionResponse = restTemplate.getForEntity(executionUrl, String.class);
+
+                System.out.println("ACa?");
+
+                // Parsear la respuesta para obtener el executionId
+                JsonNode executionNode = mapper.readTree(executionResponse.getBody());
+                String executionId = executionNode.get(0).path("id").asText(); // Obtener el primer executionId
+
+                System.out.println("Esto?");
+
+                //Con el ExecutionId ya puedo completar la primera Task, esto ademas me va a servir para los proximos pasos del proceso
+                String completeTaskUrl = "http://localhost:8080/engine-rest/task/" + executionId + "/complete";
+                ResponseEntity<String> executionResponseTskCmplt = restTemplate.getForEntity(completeTaskUrl, String.class);
+
+
+                System.out.println("Proceso de beca de alimentación iniciado en Camunda. ExecutionId: " + executionResponseTskCmplt);
+
             } else {
                 System.out.println("Error al iniciar el proceso en Camunda: " + response.getBody());
             }
@@ -151,6 +184,12 @@ public class BecaRest {
 
         // Llamar al servicio para crear la beca
         return becaService.crearBeca(newBeca);
+    }
+
+    @GetMapping("/avanzarBeca")
+    public void AvanzarBeca() {
+        // Llamar al servicio para continuar con la beca
+
     }
 
 }

@@ -1,6 +1,7 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/gestionestudiantil
+    url: jdbc:postgresql://localhost:5432/gestionestudiantil #Para ejecuciones locales
+#    url: jdbc:postgresql://postgresql:5432/gestionestudiantil #Para ejecuciones de docker
     username: postgres
     password: admin
     driver-class-name: org.postgresql.Driver
@@ -9,7 +10,7 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
     hibernate:
-      ddl-auto: create-drop  # Cambia 'create-drop' a 'update' para no perder datos
+      ddl-auto: create-drop  # O 'update' para mantener los datos
 
 camunda:
   deployment-resource-pattern:
@@ -27,7 +28,7 @@ camunda:
     webapp:
       enabled: true
     admin-user:
-      id: demo  # Crear un usuario administrador con ID 'demo'
-      password: demo  # Password para el usuario administrador
+      id: demo
+      password: demo
     rest:
-      enabled: true  # Asegúrate de que la API REST esté habilitada
+      enabled: true
