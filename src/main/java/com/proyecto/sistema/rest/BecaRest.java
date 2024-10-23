@@ -202,7 +202,9 @@ public class BecaRest {
         String estadoAnt = BecaUpd.getEstadoBeca();
         String nuevoEst = "";
         //Si pasa o si Rechaza cambia el estado
-        if (estadoBeca=="avanza"){
+
+        System.out.println(estadoBeca);
+        if ("avanza".equals(estadoBeca)){
             switch (estadoAnt){
                 case "Iniciado":
                     nuevoEst = "definirFechas";
@@ -247,8 +249,6 @@ public class BecaRest {
 
         System.out.println("estadoBeca nuevo: "+nuevoEst);
 
-        nuevoEst = "definirFechas";
-
         // Crear el payload para Camunda
         Map<String, Object> estadoBecaVar = new HashMap<>();
         estadoBecaVar.put("value", nuevoEst);
@@ -262,7 +262,6 @@ public class BecaRest {
         Map<String, Object> body = new HashMap<>();
         body.put("variables", processVariables);
 
-
         System.out.println(new ObjectMapper().writeValueAsString(body)); // Serializa el mapa a JSON
 
         // Preparar la URL para completar la tarea
@@ -274,7 +273,8 @@ public class BecaRest {
         // Verificar si la respuesta fue exitosa
         if (taskCompleteResponse.getStatusCode().is2xxSuccessful()) {
             System.out.println("Tarea completada exitosamente.");
-            becaService.modificarBeca(idEstudiante,BecaUpd);
+
+            becaService.modificarBeca(BecaUpd.getIdBeca(),BecaUpd);
         } else {
             System.out.println("Error al completar la tarea: " + taskCompleteResponse.getBody());
         }
