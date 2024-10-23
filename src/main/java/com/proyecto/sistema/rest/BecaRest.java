@@ -1,5 +1,6 @@
 package com.proyecto.sistema.rest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.proyecto.sistema.configuration.MyCorsConfiguration;
@@ -72,13 +73,11 @@ public class BecaRest {
         return becaDTOs;
     }
 
-
     @GetMapping("/listar/")
     public List<Becas> listarBecaPorEstudiante() {
         // Llamar al servicio de autenticación
         return becaService.obtenerTodasLasBecas();
     }
-
 
     @PostMapping("/nuevaBeca")
     public Becas register(
@@ -121,7 +120,7 @@ public class BecaRest {
             // Agregar las variables al cuerpo
             Map<String, Object> processVariables = new HashMap<>();
             processVariables.put("estudiante", estudianteVar);
-            processVariables.put("tipoBecaVar", estadoBecaVar);
+            processVariables.put("tipoBecaVar", tipoBecaVar);
             processVariables.put("estadoBeca", estadoBecaVar);
 
             // Crear el cuerpo de la solicitud
@@ -133,43 +132,45 @@ public class BecaRest {
             // URL del proceso en Camunda
             String camundaUrl = "http://localhost:8080/engine-rest/process-definition/key/gestionBecaAlimentacion/start";
 
-            System.out.println("Antes");
-
             // Enviar la solicitud a Camunda
             ResponseEntity<String> response = restTemplate.postForEntity(camundaUrl, body, String.class);
 
-            System.out.println("Despues");
-
             // Verificar si la respuesta es satisfactoria
             if (response.getStatusCode().is2xxSuccessful()) {
-
-                System.out.println("Principio");
-
                 // Parsear la respuesta para obtener el processInstanceId
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode rootNode = mapper.readTree(response.getBody());
                 String processInstanceId = rootNode.path("id").asText();  // Obtener el processInstanceId
+                newBeca.setPrcesoCamunda(processInstanceId);
 
-                System.out.println("Aqui?");
+                // Obtener el taskId utilizando el processInstanceId
+                String taskUrl = "http://localhost:8080/engine-rest/task?processInstanceId=" + processInstanceId;
+                ResponseEntity<String> taskResponse = restTemplate.getForEntity(taskUrl, String.class);
 
-                // Usar el processInstanceId para obtener el executionId
-                String executionUrl = "http://localhost:8080/engine-rest/execution?processInstanceId=" + processInstanceId;
-                ResponseEntity<String> executionResponse = restTemplate.getForEntity(executionUrl, String.class);
+                // Parsear la respuesta para obtener el taskId
+                JsonNode taskNode = mapper.readTree(taskResponse.getBody());
+                if (taskNode.isArray() && taskNode.size() > 0) {
+                    String taskId = taskNode.get(0).path("id").asText();  // Obtener el primer taskId
 
-                System.out.println("ACa?");
+                    // Preparar la URL para completar la tarea
+                    String completeTaskUrl = "http://localhost:8080/engine-rest/task/" + taskId + "/complete";
 
-                // Parsear la respuesta para obtener el executionId
-                JsonNode executionNode = mapper.readTree(executionResponse.getBody());
-                String executionId = executionNode.get(0).path("id").asText(); // Obtener el primer executionId
+                    // Crear el cuerpo de la solicitud para completar la tarea
+                    Map<String, Object> completeTaskBody = new HashMap<>();
+                    completeTaskBody.put("variables", new HashMap<>());  // Aquí puedes agregar las variables necesarias para completar la tarea
 
-                System.out.println("Esto?");
+                    // Enviar la solicitud POST para completar la tarea
+                    ResponseEntity<String> taskCompleteResponse = restTemplate.postForEntity(completeTaskUrl, completeTaskBody, String.class);
 
-                //Con el ExecutionId ya puedo completar la primera Task, esto ademas me va a servir para los proximos pasos del proceso
-                String completeTaskUrl = "http://localhost:8080/engine-rest/task/" + executionId + "/complete";
-                ResponseEntity<String> executionResponseTskCmplt = restTemplate.getForEntity(completeTaskUrl, String.class);
-
-
-                System.out.println("Proceso de beca de alimentación iniciado en Camunda. ExecutionId: " + executionResponseTskCmplt);
+                    // Verificar si la respuesta fue exitosa
+                    if (taskCompleteResponse.getStatusCode().is2xxSuccessful()) {
+                        System.out.println("Tarea completada exitosamente.");
+                    } else {
+                        System.out.println("Error al completar la tarea: " + taskCompleteResponse.getBody());
+                    }
+                } else {
+                    System.out.println("No se encontraron tareas activas para el processInstanceId: " + processInstanceId);
+                }
 
             } else {
                 System.out.println("Error al iniciar el proceso en Camunda: " + response.getBody());
@@ -186,11 +187,134 @@ public class BecaRest {
         return becaService.crearBeca(newBeca);
     }
 
-    @GetMapping("/avanzarBeca")
-    public void AvanzarBeca() {
+
+
+    @PostMapping("/avanzarBeca")
+    public void AvanzarBeca(
+            @RequestParam Long idEstudiante,
+            @RequestParam String estadoBeca,
+            @RequestParam String tipoBeca) throws JsonProcessingException {
         // Llamar al servicio para continuar con la beca
+        Becas BecaUpd = becaService.findByEstudianteAndTipoBeca(idEstudiante,tipoBeca);
+        String InstanceId = BuscarIntanceId(idEstudiante,tipoBeca);
+
+        System.out.println(BecaUpd.getEstadoBeca());
+        String estadoAnt = BecaUpd.getEstadoBeca();
+        String nuevoEst = "";
+        //Si pasa o si Rechaza cambia el estado
+        if (estadoBeca=="avanza"){
+            switch (estadoAnt){
+                case "Iniciado":
+                    nuevoEst = "definirFechas";
+                    BecaUpd.setEstadoBeca("definirFechas");
+                    break;
+                case "definirFechas":
+                    nuevoEst = "esperandoReunion";
+                    BecaUpd.setEstadoBeca("esperandoReunion");
+                    break;
+                case "esperandoResultado":
+                    nuevoEst = "enviarMail";
+                    BecaUpd.setEstadoBeca("enviarMail");
+                    break;
+                case "mailEnviado":
+                    nuevoEst = "NoNotificadoAceptado";
+                    BecaUpd.setEstadoBeca("NoNotificadoAceptado");
+                    break;
+
+            }
+        } else if (estadoBeca=="rechazado") {
+            BecaUpd.setEstadoBeca("Rechazado");
+            switch (estadoAnt){
+                case "Iniciado":
+                    nuevoEst = "Rechazado";
+                    BecaUpd.setEstadoBeca("Rechazado");
+                    break;
+                case "definirFechas":
+                    nuevoEst = "Rechazado";
+                    BecaUpd.setEstadoBeca("Rechazado");
+                    break;
+                case "esperandoResultado":
+                    nuevoEst = "Rechazado";
+                    BecaUpd.setEstadoBeca("Rechazado");
+                    break;
+                case "mailEnviado":
+                    nuevoEst = "Rechazado";
+                    BecaUpd.setEstadoBeca("Rechazado");
+                    break;
+
+            }
+        }
+
+        System.out.println("estadoBeca nuevo: "+nuevoEst);
+
+        nuevoEst = "definirFechas";
+
+        // Crear el payload para Camunda
+        Map<String, Object> estadoBecaVar = new HashMap<>();
+        estadoBecaVar.put("value", nuevoEst);
+        estadoBecaVar.put("type", "String"); // Especifica el tipo de dato
+
+        // Agregar las variables al cuerpo
+        Map<String, Object> processVariables = new HashMap<>();
+        processVariables.put("estadoBeca", estadoBecaVar);
+
+        // Crear el cuerpo de la solicitud
+        Map<String, Object> body = new HashMap<>();
+        body.put("variables", processVariables);
+
+
+        System.out.println(new ObjectMapper().writeValueAsString(body)); // Serializa el mapa a JSON
+
+        // Preparar la URL para completar la tarea
+        String completeTaskUrl = "http://localhost:8080/engine-rest/task/" + InstanceId + "/complete";
+
+        // Enviar la solicitud POST para completar la tarea
+        ResponseEntity<String> taskCompleteResponse = restTemplate.postForEntity(completeTaskUrl, body, String.class);
+
+        // Verificar si la respuesta fue exitosa
+        if (taskCompleteResponse.getStatusCode().is2xxSuccessful()) {
+            System.out.println("Tarea completada exitosamente.");
+            becaService.modificarBeca(idEstudiante,BecaUpd);
+        } else {
+            System.out.println("Error al completar la tarea: " + taskCompleteResponse.getBody());
+        }
+
 
     }
 
+    public String BuscarIntanceId(Long idEstudiante,String tipoBeca) throws JsonProcessingException {
+        //Consulta a la base por el estado actual de la beca
+        System.out.println("id del estudiante: " + idEstudiante);
+        System.out.println("tipo de Beca: " + tipoBeca);
+
+        Becas becaEst = becaService.findByEstudianteAndTipoBeca(idEstudiante,tipoBeca);
+
+        String ProcessIdCamunda = becaEst.getPrcesoCamunda();
+
+        // Obtener el taskId utilizando el processInstanceId
+        String taskUrl = "http://localhost:8080/engine-rest/task?processInstanceId=" + ProcessIdCamunda;
+        ResponseEntity<String> taskResponse = restTemplate.getForEntity(taskUrl, String.class);
+
+        // Parsear la respuesta para obtener el taskId
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = mapper.readTree(taskResponse.getBody());
+
+        String mensaje;
+        if (rootNode.isArray() && rootNode.size() > 0) {
+                String taskId = rootNode.get(0).path("id").asText();  // Obtener el primer taskId
+                return taskId;
+        } else {
+            mensaje = "No se encontraron tareas activas para el processInstanceId: " + ProcessIdCamunda;
+            return mensaje;
+        }
+
+
+    }
+
+    public void CompletarInstanceId(String ProcessId, String nuevoEstado){
+
+    }
 }
+
+
 

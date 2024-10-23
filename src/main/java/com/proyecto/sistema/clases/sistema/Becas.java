@@ -14,6 +14,7 @@ public class Becas {
     private Boolean reqLlamado;
     private String estadoBeca;
     private String tipoBeca;
+    private String prcesoCamunda;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true) // Relación OneToMany con los documentos
     private List<Documento> documentosPDF; // Lista de documentos PDF (entidad separada)
@@ -74,5 +75,13 @@ public class Becas {
 
     public void setTipoBeca(String tipoBeca) {
         this.tipoBeca = tipoBeca;
+    }
+
+    public String getPrcesoCamunda() {
+        return prcesoCamunda;
+    }
+
+    public void setPrcesoCamunda(String prcesoCamunda) {
+        this.prcesoCamunda = prcesoCamunda;
     }
 }
