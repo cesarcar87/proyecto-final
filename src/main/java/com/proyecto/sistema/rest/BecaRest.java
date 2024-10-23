@@ -222,7 +222,6 @@ public class BecaRest {
                     nuevoEst = "NoNotificadoAceptado";
                     BecaUpd.setEstadoBeca("NoNotificadoAceptado");
                     break;
-
             }
         } else if (estadoBeca=="rechazado") {
             BecaUpd.setEstadoBeca("Rechazado");
