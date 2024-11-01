@@ -245,7 +245,7 @@ public class BecaRest {
 
             }
         }
-
+//mensaje para commit
         System.out.println("estadoBeca nuevo: "+nuevoEst);
 
         // Crear el payload para Camunda
