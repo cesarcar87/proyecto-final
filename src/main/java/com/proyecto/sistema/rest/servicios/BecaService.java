@@ -51,7 +51,6 @@ public class BecaService {
         }).orElseThrow(() -> new RuntimeException("No se encontró la beca con el ID: " + idBeca));
     }
 
-
     // Crear una nueva Beca
     @PostMapping
     public Becas crearBeca(@RequestBody Becas beca) {

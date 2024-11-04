@@ -14,9 +14,10 @@ public abstract class Usuario {
     private String edad;
     private String telefono;
     private String correo;
+    private String tipoDocumento;
+    private String documento;
     private String password;
     private String datosGoogle;
-
 
     // Getters y setters
 
@@ -68,6 +69,22 @@ public abstract class Usuario {
         this.correo = correo;
     }
 
+    public String getTipoDocumento() {
+        return tipoDocumento;
+    }
+
+    public void setTipoDocumento(String tipoDocumento) {
+        this.tipoDocumento = tipoDocumento;
+    }
+
+    public String getDocumento() {
+        return documento;
+    }
+
+    public void setDocumento(String documento) {
+        this.documento = documento;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -83,4 +100,5 @@ public abstract class Usuario {
     public void setDatosGoogle(String datosGoogle) {
         this.datosGoogle = datosGoogle;
     }
+
 }

@@ -20,6 +20,7 @@ camunda:
     - classpath*:**/*.dmn11.xml
     - classpath*:**/*.form
   bpm:
+    enforce-history-time-to-live: false  # Desactiva la verificación de TTL (usar solo para pruebas)
     database:
       type: postgres
     schema-update: true

@@ -130,7 +130,7 @@ public class BecaRest {
             System.out.println(new ObjectMapper().writeValueAsString(body)); // Serializa el mapa a JSON
 
             // URL del proceso en Camunda
-            String camundaUrl = "http://localhost:8080/engine-rest/process-definition/key/gestionBecaAlimentacion/start";
+            String camundaUrl = "http://localhost:8080/engine-rest/process-definition/key/gestionBeca/start";
 
             // Enviar la solicitud a Camunda
             ResponseEntity<String> response = restTemplate.postForEntity(camundaUrl, body, String.class);
@@ -198,12 +198,12 @@ public class BecaRest {
         Becas BecaUpd = becaService.findByEstudianteAndTipoBeca(idEstudiante,tipoBeca);
         String InstanceId = BuscarIntanceId(idEstudiante,tipoBeca);
 
-        System.out.println(BecaUpd.getEstadoBeca());
+        System.out.println("Estao de BecaUpd" + BecaUpd.getEstadoBeca());
         String estadoAnt = BecaUpd.getEstadoBeca();
         String nuevoEst = "";
         //Si pasa o si Rechaza cambia el estado
 
-        System.out.println(estadoBeca);
+        System.out.println("Estao de Beca antes del switch" +estadoBeca);
         if ("avanza".equals(estadoBeca)){
             switch (estadoAnt){
                 case "Iniciado":
@@ -214,6 +214,10 @@ public class BecaRest {
                     nuevoEst = "esperandoReunion";
                     BecaUpd.setEstadoBeca("esperandoReunion");
                     break;
+                case "esperandoReunion":
+                    nuevoEst = "enviarMail";
+                    BecaUpd.setEstadoBeca("enviarMail");
+                    break;
                 case "esperandoResultado":
                     nuevoEst = "enviarMail";
                     BecaUpd.setEstadoBeca("enviarMail");
@@ -222,8 +226,12 @@ public class BecaRest {
                     nuevoEst = "NoNotificadoAceptado";
                     BecaUpd.setEstadoBeca("NoNotificadoAceptado");
                     break;
+                case "enviarMail":
+                    nuevoEst = "NoNotificadoAceptado";
+                    BecaUpd.setEstadoBeca("NoNotificadoAceptado");
+                    break;
             }
-        } else if (estadoBeca=="rechazado") {
+        } else if (estadoBeca.equals("rechazado")) {
             BecaUpd.setEstadoBeca("Rechazado");
             switch (estadoAnt){
                 case "Iniciado":
@@ -234,6 +242,10 @@ public class BecaRest {
                     nuevoEst = "Rechazado";
                     BecaUpd.setEstadoBeca("Rechazado");
                     break;
+                case "esperandoReunion":
+                    nuevoEst = "Rechazado";
+                    BecaUpd.setEstadoBeca("Rechazado");
+                    break;
                 case "esperandoResultado":
                     nuevoEst = "Rechazado";
                     BecaUpd.setEstadoBeca("Rechazado");
@@ -242,7 +254,10 @@ public class BecaRest {
                     nuevoEst = "Rechazado";
                     BecaUpd.setEstadoBeca("Rechazado");
                     break;
-
+                case "enviarMail":
+                    nuevoEst = "Rechazado";
+                    BecaUpd.setEstadoBeca("Rechazado");
+                    break;
             }
         }
 //mensaje para commit
@@ -277,8 +292,6 @@ public class BecaRest {
         } else {
             System.out.println("Error al completar la tarea: " + taskCompleteResponse.getBody());
         }
-
-
     }
 
     public String BuscarIntanceId(Long idEstudiante,String tipoBeca) throws JsonProcessingException {
@@ -310,9 +323,6 @@ public class BecaRest {
 
     }
 
-    public void CompletarInstanceId(String ProcessId, String nuevoEstado){
-
-    }
 }
 
 

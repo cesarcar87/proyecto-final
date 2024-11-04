@@ -12,6 +12,8 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.GmailScopes;
 import com.google.api.services.gmail.model.Message;
+import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.delegate.JavaDelegate;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -27,15 +29,16 @@ import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-public class GoogleMailApi {
+public class GoogleMailApi{
 
-    private static final String APPLICATION_NAME = "My First Project";
+
+    private static final String APPLICATION_NAME = "Coordinacion Estudiantes";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final List<String> SCOPES = Collections.singletonList(GmailScopes.GMAIL_SEND);
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
 
     // Cargar las credenciales del archivo credentials.json
-    private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
+    public static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         File credentialsFile = new File("src/main/resources/client_secret_768873216358-7cdlvnvoc4rfc8vesjkp78d7j3g4ejdc.apps.googleusercontent.com.json"); // Coloca aquí la ruta de tu archivo credentials.json
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(new FileInputStream(credentialsFile)));
 
@@ -85,7 +88,5 @@ public class GoogleMailApi {
         return email;
     }
 
-    public static void main(String[] args) throws Exception {
-        enviarCorreo("fede.lopez04pers@gmail.com", "Asunto de prueba", "Este es un mensaje de prueba.");
-    }
+
 }
