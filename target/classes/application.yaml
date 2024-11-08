@@ -1,16 +1,21 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/gestionestudiantil #Para ejecuciones locales
-#    url: jdbc:postgresql://postgresql:5432/gestionestudiantil #Para ejecuciones de docker
+    url: jdbc:postgresql://localhost:5432/gestionestudiantil
     username: postgres
     password: admin
     driver-class-name: org.postgresql.Driver
+    hikari:
+      auto-commit: false
 
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
     hibernate:
       ddl-auto: create-drop  # O 'update' para mantener los datos
+    properties:
+      hibernate:
+        connection:
+          autocommit: false
 
 camunda:
   deployment-resource-pattern:

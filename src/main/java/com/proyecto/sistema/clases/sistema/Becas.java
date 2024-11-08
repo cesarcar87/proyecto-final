@@ -1,6 +1,9 @@
 package com.proyecto.sistema.clases.sistema;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import java.util.List;
 
 @Entity
@@ -16,11 +19,13 @@ public class Becas {
     private String tipoBeca;
     private String prcesoCamunda;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true) // Relación OneToMany con los documentos
-    private List<Documento> documentosPDF; // Lista de documentos PDF (entidad separada)
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY) // Relación OneToMany con los documentos
+    @Fetch(FetchMode.JOIN)
+    private List<Documento> documentosPDF;
+
 
     // Getters y setters
-
     public Long getIdBeca() {
         return idBeca;
     }

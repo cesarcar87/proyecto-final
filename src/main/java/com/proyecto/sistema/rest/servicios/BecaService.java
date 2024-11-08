@@ -23,6 +23,7 @@ public class BecaService {
         return getBecRespository.findAll();
     }
 
+
     public List<Becas> obtenerBecaPorEstudiante(Long estudianteId) {
         // Deberías retornar una lista de becas
         return getBecRespository.findByEstudiante(estudianteId);
@@ -56,5 +57,7 @@ public class BecaService {
     public Becas crearBeca(@RequestBody Becas beca) {
         return getBecRespository.save(beca);
     }
+
+
 
 }

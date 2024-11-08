@@ -1,16 +1,16 @@
-package com.proyecto.sistema.clases.sistema;
+    package com.proyecto.sistema.clases.sistema;
 
-import jakarta.persistence.*;
+    import jakarta.persistence.*;
 
-@Entity
-public class Documento {
+    @Entity
+    public class Documento {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idDocumento;
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long idDocumento;
 
-    @Lob
-    private byte[] contenidoPDF; // Almacena los bytes del archivo PDF
+        @Lob
+        private byte[] contenidoPDF; // Almacena los bytes del archivo PDF
 
     // Getters y setters
 

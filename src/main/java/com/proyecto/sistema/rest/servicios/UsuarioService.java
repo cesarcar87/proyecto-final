@@ -1,22 +1,36 @@
 package com.proyecto.sistema.rest.servicios;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.proyecto.sistema.clases.usuarios.Estudiante;
 import com.proyecto.sistema.clases.usuarios.Usuario;
 import com.proyecto.sistema.rest.repositorios.GetEstRepository;
 import com.proyecto.sistema.rest.repositorios.GetUsuRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class UsuarioService {
 
     @Autowired
     private GetUsuRepository getUsuRepository;
+
+    // Constantes para Google OAuth
+    private static final String CLIENT_ID = "768873216358-7cdlvnvoc4rfc8vesjkp78d7j3g4ejdc.apps.googleusercontent.com";
 
     @Autowired
     private GetEstRepository getEstRepository;
@@ -35,24 +49,59 @@ public class UsuarioService {
 
     // Crear un nuevo estudiante
     @PostMapping
-    public Usuario crearEstudiante(@RequestBody Estudiante estudiante) {
+    public Estudiante crearEstudiante(@RequestBody Estudiante estudiante) {
         return getEstRepository.save(estudiante);
     }
 
+    // Método de login con Google OAuth
+    public ResponseEntity<Map<String, String>> googleAuth(String accessToken) throws GeneralSecurityException, IOException {
+        // Verificar el token de acceso usando la API de Google
+        GoogleIdToken idToken = verifyAccessToken(accessToken);
 
-    public Usuario login(String correo, String password) {
-        // Buscar el usuario en la base de datos usando el repositorio
-        Usuario usuario = getUsuRepository.findByCorreoAndPassword(correo, password);
-
-
-        // Validar el usuario encontrado
-        if (usuario != null) {
-            System.out.print("correo" + correo);
-            System.out.print("contraseña" + password);
-            System.out.print("Se logueo correctamente");
-            return usuario; // Inicio de sesión exitoso
-        } else {
-            return null; // Credenciales inválidas
+        if (idToken == null) {
+            return ResponseEntity.status(401).body(Map.of("error", "El access_token no es válido"));
         }
+
+        // Obtener la información del usuario a partir del idToken
+        String userId = idToken.getPayload().getSubject();  // ID del usuario
+        String email = idToken.getPayload().getEmail(); // Email del usuario
+        String fullName = (String) idToken.getPayload().get("name");  // Nombre completo
+        String[] nameParts = fullName.split(" ");  // Dividir el nombre completo en partes (nombre y apellido)
+        String firstName = nameParts[0];  // Asumimos que el primer nombre es el "firstName"
+        String lastName = nameParts.length > 1 ? nameParts[1] : "";  // El apellido será el segundo elemento, si existe
+
+        // Verificar si el usuario ya existe en la base de datos
+        Usuario usuario = getUsuRepository.findByCorreo(email);
+        if (usuario == null) {
+            // Si el usuario no existe, crearlo (opcional)
+            usuario = new Estudiante();
+            usuario.setCorreo(email);
+            usuario.setNombre(firstName); // Guardar el nombre del usuario
+            usuario.setApellido(lastName); // Guardar el apellido del usuario
+            usuario = getUsuRepository.save(usuario);
+        }
+
+        // Devolver la respuesta con el token, nombre, apellido y demás datos
+        return ResponseEntity.ok(Map.of(
+                "access_token", accessToken,
+                "userId", userId,
+                "email", email,
+                "firstName", firstName,  // Nombre
+                "lastName", lastName     // Apellido
+        ));
     }
+
+    // Método para verificar el access_token
+    private GoogleIdToken verifyAccessToken(String accessToken) throws GeneralSecurityException, IOException {
+        HttpTransport transport = GoogleNetHttpTransport.newTrustedTransport();
+        JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
+
+        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
+                .setAudience(Collections.singletonList(CLIENT_ID))
+                .build();
+
+        return verifier.verify(accessToken);
+    }
+
+
 }

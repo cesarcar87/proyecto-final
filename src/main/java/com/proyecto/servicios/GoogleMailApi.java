@@ -1,4 +1,5 @@
 package com.proyecto.servicios;
+
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
@@ -12,25 +13,21 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.GmailScopes;
 import com.google.api.services.gmail.model.Message;
-import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.camunda.bpm.engine.delegate.JavaDelegate;
-
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
-import java.util.Base64;
 import java.util.Properties;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 
-public class GoogleMailApi{
-
+public class GoogleMailApi {
 
     private static final String APPLICATION_NAME = "Coordinacion Estudiantes";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
@@ -87,6 +84,4 @@ public class GoogleMailApi{
         email.setText(cuerpoTexto);
         return email;
     }
-
-
 }

@@ -3,19 +3,24 @@ package com.proyecto.sistema.rest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.proyecto.sistema.configuration.MyCorsConfiguration;
 import com.proyecto.sistema.clases.DTO.BecaDTO;
 import com.proyecto.sistema.clases.sistema.Becas;
 import com.proyecto.sistema.clases.sistema.Documento;
-import com.proyecto.sistema.clases.usuarios.Estudiante;
-import com.proyecto.sistema.clases.usuarios.Usuario;
+import com.proyecto.sistema.exceptions.ResourceNotFoundException;
+import com.proyecto.sistema.rest.repositorios.GetDocRepository;
 import com.proyecto.sistema.rest.servicios.BecaService;
-import com.proyecto.sistema.rest.servicios.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,6 +34,9 @@ public class BecaRest {
 
     @Autowired
     private BecaService becaService;
+
+    @Autowired
+    private GetDocRepository getDocRespository;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -86,6 +94,14 @@ public class BecaRest {
             @RequestParam("archivosPdf") MultipartFile[] archivosPdf // Recibir múltiples archivos
     ) throws IOException {
 
+        if(tipoBeca.equals("Alimentacion")){
+            tipoBeca = "alimentacion";
+        }
+
+        if(tipoBeca.equals("Transporte")){
+            tipoBeca = "transporte";
+        }
+
         // Crear nueva beca
         Becas newBeca = new Becas();
         newBeca.setEstudiante(estudiante);
@@ -120,7 +136,7 @@ public class BecaRest {
             // Agregar las variables al cuerpo
             Map<String, Object> processVariables = new HashMap<>();
             processVariables.put("estudiante", estudianteVar);
-            processVariables.put("tipoBecaVar", tipoBecaVar);
+            processVariables.put("tipoBeca", tipoBecaVar);
             processVariables.put("estadoBeca", estadoBecaVar);
 
             // Crear el cuerpo de la solicitud
@@ -319,9 +335,20 @@ public class BecaRest {
             mensaje = "No se encontraron tareas activas para el processInstanceId: " + ProcessIdCamunda;
             return mensaje;
         }
-
-
     }
+
+    //@Transactional(readOnly = true)
+    @GetMapping("/documento/{id}")
+    public ResponseEntity<byte[]> descargarDocumento(@PathVariable Long id) {
+        Documento documento = getDocRespository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Documento no encontrado"));
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"documento_" + id + ".pdf\"")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(documento.getContenidoPDF());
+    }
+
+
 
 }
 
