@@ -36,4 +36,13 @@ public class UsuarioRest {
         String accessToken = payload.get("access_token");  // Recibir el access_token directamente
         return usuarioService.googleAuth(accessToken); // Pasar el access_token al servicio
     }
+
+
+    @PostMapping("/login")
+    public Usuario login(@RequestParam String correo) {
+        // Llamar al servicio de autenticación
+        return usuarioService.login(correo);
+    }
+
+
 }

@@ -41,12 +41,13 @@ public class UsuarioService {
         return getUsuRepository.findAll();
     }
 
+    /*
     // Crear un nuevo estudiante
     @PostMapping
     public Usuario crearUsuario(@RequestBody Usuario usuario) {
         return getUsuRepository.save(usuario);
     }
-
+*/
     // Crear un nuevo estudiante
     @PostMapping
     public Estudiante crearEstudiante(@RequestBody Estudiante estudiante) {
@@ -70,17 +71,6 @@ public class UsuarioService {
         String firstName = nameParts[0];  // Asumimos que el primer nombre es el "firstName"
         String lastName = nameParts.length > 1 ? nameParts[1] : "";  // El apellido será el segundo elemento, si existe
 
-        // Verificar si el usuario ya existe en la base de datos
-        Usuario usuario = getUsuRepository.findByCorreo(email);
-        if (usuario == null) {
-            // Si el usuario no existe, crearlo (opcional)
-            usuario = new Estudiante();
-            usuario.setCorreo(email);
-            usuario.setNombre(firstName); // Guardar el nombre del usuario
-            usuario.setApellido(lastName); // Guardar el apellido del usuario
-            usuario = getUsuRepository.save(usuario);
-        }
-
         // Devolver la respuesta con el token, nombre, apellido y demás datos
         return ResponseEntity.ok(Map.of(
                 "access_token", accessToken,
@@ -101,6 +91,19 @@ public class UsuarioService {
                 .build();
 
         return verifier.verify(accessToken);
+    }
+
+    public Usuario login(String correo) {
+        // Buscar el usuario en la base de datos usando el repositorio
+        Usuario usuario = getUsuRepository.findByCorreo(correo);
+        // Validar el usuario encontrado
+        if (usuario != null) {
+            System.out.print("correo" + correo);
+            System.out.print("Se logueo correctamente");
+            return usuario; // Inicio de sesión exitoso
+        } else {
+            return null; // Credenciales inválidas
+        }
     }
 
 
