@@ -13,9 +13,37 @@ public class TutEntrePar {
     private Long idTutoria;
     private Long[] estudiantesTutorados;
     private Long estudianteTutor;
-    private Sting unidadCurricularTutoria;
+    private String unidadCurricularTutoria;
 
+    public Long getIdTutoria() {
+        return idTutoria;
+    }
 
+    public void setIdTutoria(Long idTutoria) {
+        this.idTutoria = idTutoria;
+    }
 
+    public Long[] getEstudiantesTutorados() {
+        return estudiantesTutorados;
+    }
 
+    public void setEstudiantesTutorados(Long[] estudiantesTutorados) {
+        this.estudiantesTutorados = estudiantesTutorados;
+    }
+
+    public Long getEstudianteTutor() {
+        return estudianteTutor;
+    }
+
+    public void setEstudianteTutor(Long estudianteTutor) {
+        this.estudianteTutor = estudianteTutor;
+    }
+
+    public String getUnidadCurricularTutoria() {
+        return unidadCurricularTutoria;
+    }
+
+    public void setUnidadCurricularTutoria(String unidadCurricularTutoria) {
+        this.unidadCurricularTutoria = unidadCurricularTutoria;
+    }
 }
