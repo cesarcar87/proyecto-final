@@ -11,7 +11,9 @@ public class Estudiante extends Usuario{
     private String itr;
     private String domicilio;
     private String localidad;
-    private String pais;
+
+
+
     public String getSemestre() {
         return semestre;
     }

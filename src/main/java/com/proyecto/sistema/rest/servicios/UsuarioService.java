@@ -59,8 +59,6 @@ public class UsuarioService {
         }
     }
 
-
-
     // Crear un nuevo estudiante
     @PostMapping
     public Estudiante crearEstudiante(@RequestBody Estudiante estudiante) {

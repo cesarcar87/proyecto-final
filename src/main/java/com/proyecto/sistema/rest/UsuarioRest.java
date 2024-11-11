@@ -48,5 +48,11 @@ public class UsuarioRest {
         return usuarioService.login(correo);
     }
 
+    // Registrar un nuevo estudiante
+    @PostMapping("/modificarEstudiante")
+    public Estudiante modificarEstudiante(@RequestBody Estudiante EstudianteUPD) {
+        return usuarioService.modificarEstudiante(EstudianteUPD);
+    }
+
 
 }
