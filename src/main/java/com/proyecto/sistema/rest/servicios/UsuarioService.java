@@ -22,6 +22,7 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class UsuarioService {
@@ -41,13 +42,25 @@ public class UsuarioService {
         return getUsuRepository.findAll();
     }
 
-    /*
-    // Crear un nuevo estudiante
-    @PostMapping
-    public Usuario crearUsuario(@RequestBody Usuario usuario) {
-        return getUsuRepository.save(usuario);
+    public Optional<Estudiante> obtenerInfoEstudiante(Long estudianteId) {
+        // Deberías retornar una lista de becas
+        return getEstRepository.findById(estudianteId);
     }
-*/
+
+    public Estudiante modificarEstudiante(Estudiante estudianteModificado) {
+        Optional<Estudiante> estudianteExistente = getEstRepository.findById(estudianteModificado.getId());
+        if (estudianteExistente.isPresent()) {
+            Estudiante estudiante = estudianteExistente.get();
+            estudiante.setCorreo(estudianteModificado.getCorreo());
+            // Otros campos a actualizar
+            return getEstRepository.save(estudiante);
+        } else {
+            return null;  // Si no existe el estudiante, retorna null
+        }
+    }
+
+
+
     // Crear un nuevo estudiante
     @PostMapping
     public Estudiante crearEstudiante(@RequestBody Estudiante estudiante) {

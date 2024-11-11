@@ -32,6 +32,16 @@ public class ServicioMeet implements JavaDelegate {
 
         String estadoBeca = "esperandoResultado";
         delegateExecution.setVariable("estadoBeca",estadoBeca);
+
+        String DescripcionMeet = "EntrevistaBeca";
+        String description  = "Entrevista para la beca";
+        // Fecha de inicio
+        String fechaInicio = "2024-11-15T09:00:00-08:00"; // 15 de noviembre de 2024 a las 9:00 AM en la zona horaria América/Los Ángeles
+
+        // Fecha de fin
+        String fechaFin = "2024-11-15T10:00:00-08:00"; // 15 de noviembre de 2024 a las 10:00 AM en la misma zona horaria
+
+        crearEventoConGoogleMeet(DescripcionMeet,description,fechaInicio,fechaFin);
     }
 
     // Método para crear una reunión en Google Calendar con Google Meet

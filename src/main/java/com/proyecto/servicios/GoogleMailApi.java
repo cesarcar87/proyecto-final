@@ -22,16 +22,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 public class GoogleMailApi {
 
     private static final String APPLICATION_NAME = "Coordinacion Estudiantes";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
-    private static final List<String> SCOPES = Collections.singletonList(GmailScopes.GMAIL_SEND);
+    private static final List<String> SCOPES = Arrays.asList(
+            GmailScopes.GMAIL_SEND,
+            "https://www.googleapis.com/auth/calendar",
+            "https://www.googleapis.com/auth/calendar.events"
+    );
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
 
     // Cargar las credenciales del archivo credentials.json

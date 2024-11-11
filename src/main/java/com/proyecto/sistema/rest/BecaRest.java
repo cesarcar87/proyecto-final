@@ -81,8 +81,8 @@ public class BecaRest {
         return becaDTOs;
     }
 
-    @GetMapping("/listar/")
-    public List<Becas> listarBecaPorEstudiante() {
+    @GetMapping("/listarBecas")
+    public List<Becas> listarTodasLasBecas() {
         // Llamar al servicio de autenticación
         return becaService.obtenerTodasLasBecas();
     }
@@ -211,6 +211,12 @@ public class BecaRest {
             @RequestParam String estadoBeca,
             @RequestParam String tipoBeca) throws JsonProcessingException {
         // Llamar al servicio para continuar con la beca
+        System.out.println("Parametros de avanzarBeca");
+        System.out.println(idEstudiante);
+        System.out.println(estadoBeca);
+        System.out.println(tipoBeca);
+
+
         Becas BecaUpd = becaService.findByEstudianteAndTipoBeca(idEstudiante,tipoBeca);
         String InstanceId = BuscarIntanceId(idEstudiante,tipoBeca);
 
