@@ -51,7 +51,14 @@ public class UsuarioService {
         Optional<Estudiante> estudianteExistente = getEstRepository.findById(estudianteModificado.getId());
         if (estudianteExistente.isPresent()) {
             Estudiante estudiante = estudianteExistente.get();
-            estudiante.setCorreo(estudianteModificado.getCorreo());
+            estudiante.setDomicilio(estudianteModificado.getDomicilio());
+            estudiante.setLocalidad(estudianteModificado.getLocalidad());
+            estudiante.setPais(estudianteModificado.getPais());
+            estudiante.setTelefono(estudianteModificado.getTelefono());
+            estudiante.setItr(estudianteModificado.getItr());
+            estudiante.setSemestre(estudianteModificado.getSemestre());
+            estudiante.setCarrera(estudianteModificado.getCarrera());
+
             // Otros campos a actualizar
             return getEstRepository.save(estudiante);
         } else {
