@@ -41,7 +41,6 @@ public class BecaService {
             // Actualizamos los campos de la beca existente con los datos de nuevaBeca
             becaExistente.setEstudiante(nuevaBeca.getEstudiante());
             becaExistente.setOtrasBecas(nuevaBeca.getOtrasBecas());
-            becaExistente.setReqLlamado(nuevaBeca.getReqLlamado());
             becaExistente.setEstadoBeca(nuevaBeca.getEstadoBeca());
             becaExistente.setTipoBeca(nuevaBeca.getTipoBeca());
             becaExistente.setPrcesoCamunda(nuevaBeca.getPrcesoCamunda());

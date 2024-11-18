@@ -50,7 +50,6 @@ public class BecaRest {
             BecaDTO dto = new BecaDTO();
             dto.setIdBeca(beca.getIdBeca());
             dto.setEstudiante(beca.getEstudiante());
-            dto.setReqLlamado(beca.getReqLlamado());
             dto.setEstadoBeca(beca.getEstadoBeca());
             // No incluir documentosPDF en el DTO
             becaDTOs.add(dto);
@@ -72,7 +71,6 @@ public class BecaRest {
             dto.setIdBeca(beca.getIdBeca());
             dto.setEstudiante(beca.getEstudiante());
             dto.setOtrasBecas(beca.getOtrasBecas());
-            dto.setReqLlamado(beca.getReqLlamado());
             dto.setEstadoBeca(beca.getEstadoBeca());
             // No incluir documentosPDF en el DTO
             becaDTOs.add(dto);

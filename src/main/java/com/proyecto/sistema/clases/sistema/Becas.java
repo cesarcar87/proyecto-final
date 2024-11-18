@@ -14,7 +14,6 @@ public class Becas {
     private Long idBeca;
     private Long estudiante;
     private Long[] otrasBecas;
-    private Boolean reqLlamado;
     private String estadoBeca;
     private String tipoBeca;
     private String prcesoCamunda;
@@ -48,14 +47,6 @@ public class Becas {
 
     public void setOtrasBecas(Long[] otrasBecas) {
         this.otrasBecas = otrasBecas;
-    }
-
-    public Boolean getReqLlamado() {
-        return reqLlamado;
-    }
-
-    public void setReqLlamado(Boolean reqLlamado) {
-        this.reqLlamado = reqLlamado;
     }
 
     public String getEstadoBeca() {

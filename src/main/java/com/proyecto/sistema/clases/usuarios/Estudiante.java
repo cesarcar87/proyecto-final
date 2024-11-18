@@ -5,19 +5,20 @@ import jakarta.persistence.Entity;
 @Entity
 public class Estudiante extends Usuario{
 
-    private String semestre;
+    private Long semestre;
     private String fechaNacimiento;
     private String carrera;
     private String itr;
     private String domicilio;
     private String localidad;
     private String pais;
+    private Boolean esTutor;
     
-    public String getSemestre() {
+    public Long getSemestre() {
         return semestre;
     }
 
-    public void setSemestre(String semestre) {
+    public void setSemestre(Long semestre) {
         this.semestre = semestre;
     }
 
@@ -67,5 +68,13 @@ public class Estudiante extends Usuario{
 
     public void setPais(String pais) {
         this.pais = pais;
+    }
+
+    public Boolean getEsTutor() {
+        return esTutor;
+    }
+
+    public void setEsTutor(Boolean esTutor) {
+        this.esTutor = esTutor;
     }
 }

@@ -4,7 +4,6 @@ public class BecaDTO {
     private Long idBeca;
     private Long estudiante;
     private Long[] otrasBecas;
-    private Boolean reqLlamado;
     private String estadoBeca;
 
     public Long getIdBeca() {
@@ -29,14 +28,6 @@ public class BecaDTO {
 
     public void setOtrasBecas(Long[] otrasBecas) {
         this.otrasBecas = otrasBecas;
-    }
-
-    public Boolean getReqLlamado() {
-        return reqLlamado;
-    }
-
-    public void setReqLlamado(Boolean reqLlamado) {
-        this.reqLlamado = reqLlamado;
     }
 
     public String getEstadoBeca() {

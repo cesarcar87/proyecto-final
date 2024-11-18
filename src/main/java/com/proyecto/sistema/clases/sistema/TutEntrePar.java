@@ -1,9 +1,8 @@
 package com.proyecto.sistema.clases.sistema;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 public class TutEntrePar {
@@ -11,9 +10,15 @@ public class TutEntrePar {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idTutoria;
-    private Long[] estudiantesTutorados;
+
+    @ElementCollection
+    private List<Long> estudiantesTutorados;
+
     private Long estudianteTutor;
-    private String unidadCurricularTutoria;
+    private Long unidadCurricularTutoria;
+    private String descripcionTutoria;
+    private String estadoTutoria;
+    private String procesoCamunda;
 
     public Long getIdTutoria() {
         return idTutoria;
@@ -23,11 +28,11 @@ public class TutEntrePar {
         this.idTutoria = idTutoria;
     }
 
-    public Long[] getEstudiantesTutorados() {
+    public List<Long> getEstudiantesTutorados() {
         return estudiantesTutorados;
     }
 
-    public void setEstudiantesTutorados(Long[] estudiantesTutorados) {
+    public void setEstudiantesTutorados(List<Long> estudiantesTutorados) {
         this.estudiantesTutorados = estudiantesTutorados;
     }
 
@@ -39,11 +44,35 @@ public class TutEntrePar {
         this.estudianteTutor = estudianteTutor;
     }
 
-    public String getUnidadCurricularTutoria() {
+    public Long getUnidadCurricularTutoria() {
         return unidadCurricularTutoria;
     }
 
-    public void setUnidadCurricularTutoria(String unidadCurricularTutoria) {
+    public void setUnidadCurricularTutoria(Long unidadCurricularTutoria) {
         this.unidadCurricularTutoria = unidadCurricularTutoria;
+    }
+
+    public String getDescripcionTutoria() {
+        return descripcionTutoria;
+    }
+
+    public void setDescripcionTutoria(String descripcionTutoria) {
+        this.descripcionTutoria = descripcionTutoria;
+    }
+
+    public String getProcesoCamunda() {
+        return procesoCamunda;
+    }
+
+    public void setProcesoCamunda(String procesoCamunda) {
+        this.procesoCamunda = procesoCamunda;
+    }
+
+    public String getEstadoTutoria() {
+        return estadoTutoria;
+    }
+
+    public void setEstadoTutoria(String estadoTutoria) {
+        this.estadoTutoria = estadoTutoria;
     }
 }
