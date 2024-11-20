@@ -13,32 +13,34 @@ public class MandarMailBecas implements JavaDelegate {
     
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
-        Integer estudiante = 4;
         String estado = "";
         String newEstadoBeca = "";
-        String asunto = "Prueba";
-        String cuerpoMensaje = "Mensaje enviado mediante el proceso de camunda para asegurarnos que se ejecuta";
+        String asunto = "Beca";
+        String cuerpoMensaje = "";
 
-        estudiante = (Integer) delegateExecution.getVariable("estudiante");
+
+
+        String estudiante = (String) delegateExecution.getVariable("correoEstudiante");
         estado = (String) delegateExecution.getVariable("estadoBeca");
-        asunto = "Respuesta Beca";
+
+        System.out.println("estado en mandar mail becas" + estado);
 
         if(estado.equals("enviarMail")){
-            cuerpoMensaje = "Mensaje A";
-            newEstadoBeca = "MailDirector";
+            cuerpoMensaje = "Se ah aceptado su solicitud de Beca, se le informara cuando el proceso de validacion por el director quede completo";
+            newEstadoBeca = "NotificadoAceptado";
         }
 
         if(estado.equals("NoNotificadoAceptado")){
-            cuerpoMensaje = "Mensaje B";
+            cuerpoMensaje = "Su Solicitud de Beca ha sido aceptada exitosamente, por favor, contactarse con coordinacion estudiantil.";
             newEstadoBeca = "NotificadoAceptado";
         }
 
         if(estado.equals("Rechazado")){
-            cuerpoMensaje = "Mensaje C";
+            cuerpoMensaje = "Se ah Rechazado su solictud de Beca, razon: ";
             newEstadoBeca = "NotificadoRechazo";
         }
 
-        //apiDeMails.enviarCorreo(estudiante,asunto,cuerpoMensaje);
+        apiDeMails.enviarCorreo(estudiante,asunto,cuerpoMensaje);
         delegateExecution.setVariable("estadoBeca",newEstadoBeca);
     }
 }

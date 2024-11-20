@@ -6,6 +6,7 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.util.DateTime;
 import com.proyecto.servicios.GoogleMailApi;
+import com.proyecto.sistema.rest.repositorios.GetEstRepository;
 import jakarta.inject.Named;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -17,6 +18,8 @@ import com.google.api.services.calendar.model.ConferenceData;
 import com.google.api.services.calendar.model.ConferenceSolutionKey;
 import com.google.api.services.calendar.model.CreateConferenceRequest;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 import static org.glassfish.jersey.server.ServerProperties.APPLICATION_NAME;
@@ -30,19 +33,35 @@ public class ServicioMeet implements JavaDelegate {
     public void execute(DelegateExecution delegateExecution) throws Exception {
         System.out.println("Se crean salas meet");
 
+        String fechaEntrevista = (String) delegateExecution.getVariable("fechaEntrevista");
+
+        // Parsear la fecha
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+        ZonedDateTime fechaFinal = ZonedDateTime.parse(fechaEntrevista, formatter);
+
+        // Sumar 1 hora
+        ZonedDateTime fechaFin = fechaFinal.plusHours(1);
+
+        // Convertir de nuevo a String si es necesario
+        String fechaFinString = fechaFin.format(formatter);
+
         String estadoBeca = "esperandoResultado";
-        delegateExecution.setVariable("estadoBeca",estadoBeca);
+        delegateExecution.setVariable("estadoBeca", estadoBeca);
 
-        String DescripcionMeet = "EntrevistaBeca";
-        String description  = "Entrevista para la beca";
-        // Fecha de inicio
-        String fechaInicio = "2024-11-15T09:00:00-08:00"; // 15 de noviembre de 2024 a las 9:00 AM en la zona horaria América/Los Ángeles
+        String DescripcionMeet = "Entrevista Coordinacion Estudiantil";
+        String description = "Entrevista";
 
-        // Fecha de fin
-        String fechaFin = "2024-11-15T10:00:00-08:00"; // 15 de noviembre de 2024 a las 10:00 AM en la misma zona horaria
+        // Llamar al método con las fechas correctas
+        String googleMeetEntrevista = crearEventoConGoogleMeet(DescripcionMeet, description, fechaEntrevista, fechaFinString);
 
-        crearEventoConGoogleMeet(DescripcionMeet,description,fechaInicio,fechaFin);
+        String CorreoEstudiante = (String) delegateExecution.getVariable("correoEstudiante");
+        String asunto = "Entrevista Google Meet";
+        String cuerpoMensaje = "Se creo la cita en Google Calendar,%s\n enlaces para la meet de google: " + googleMeetEntrevista;
+
+        googleMailApi.enviarCorreo(CorreoEstudiante,asunto,cuerpoMensaje);
+
     }
+
 
     // Método para crear una reunión en Google Calendar con Google Meet
     public static String crearEventoConGoogleMeet(String summary, String description, String fechaInicio, String fechaFin) throws Exception {
