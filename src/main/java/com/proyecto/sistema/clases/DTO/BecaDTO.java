@@ -5,6 +5,7 @@ public class BecaDTO {
     private Long estudiante;
     private Long[] otrasBecas;
     private Boolean reqLlamado;
+    private String tipoBeca;
     private String estadoBeca;
 
     public Long getIdBeca() {
@@ -45,5 +46,13 @@ public class BecaDTO {
 
     public void setEstadoBeca(String estadoBeca) {
         this.estadoBeca = estadoBeca;
+    }
+
+    public String getTipoBeca() {
+        return tipoBeca;
+    }
+
+    public void setTipoBeca(String tipoBeca) {
+        this.tipoBeca = tipoBeca;
     }
 }

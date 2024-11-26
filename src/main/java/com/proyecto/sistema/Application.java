@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
 @SpringBootApplication
-@ComponentScan(basePackages = "com.proyecto.sistema")
+@ComponentScan(basePackages = "com.proyecto")
 public class Application {
 
   public static void main(String... args) {

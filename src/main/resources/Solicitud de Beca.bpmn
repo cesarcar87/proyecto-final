@@ -135,7 +135,7 @@
       <bpmn:incoming>Flow_12ehsi4</bpmn:incoming>
       <bpmn:outgoing>Flow_09v0ck4</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:serviceTask id="Activity_0d3phny" name="Se crean Salas de MEET y Calendar" camunda:delegateExpression="#{servicioMeet}">
+    <bpmn:serviceTask id="Activity_0d3phny" name="Se crean Salas de MEET y Calendar" camunda:delegateExpression="#{servicioMeetBecas}">
       <bpmn:incoming>Flow_1v2vw3a</bpmn:incoming>
       <bpmn:outgoing>Flow_079u7ev</bpmn:outgoing>
     </bpmn:serviceTask>

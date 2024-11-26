@@ -4,11 +4,13 @@ import com.proyecto.servicios.GoogleMailApi;
 import jakarta.inject.Named;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 @Named
 public class MandarMailBecas implements JavaDelegate {
 
+    @Autowired
     GoogleMailApi apiDeMails;
     
     @Override
@@ -17,8 +19,6 @@ public class MandarMailBecas implements JavaDelegate {
         String newEstadoBeca = "";
         String asunto = "Beca";
         String cuerpoMensaje = "";
-
-
 
         String estudiante = (String) delegateExecution.getVariable("correoEstudiante");
         estado = (String) delegateExecution.getVariable("estadoBeca");
@@ -40,7 +40,7 @@ public class MandarMailBecas implements JavaDelegate {
             newEstadoBeca = "NotificadoRechazo";
         }
 
-        apiDeMails.enviarCorreo(estudiante,asunto,cuerpoMensaje);
+        GoogleMailApi.enviarCorreo(estudiante,asunto,cuerpoMensaje);
         delegateExecution.setVariable("estadoBeca",newEstadoBeca);
     }
 }

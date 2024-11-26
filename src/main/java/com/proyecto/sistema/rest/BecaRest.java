@@ -14,7 +14,6 @@ import com.proyecto.sistema.rest.repositorios.GetEstRepository;
 import com.proyecto.sistema.rest.servicios.BecaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,16 +24,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/beca")
@@ -85,6 +81,7 @@ public class BecaRest {
             dto.setIdBeca(beca.getIdBeca());
             dto.setEstudiante(beca.getEstudiante());
             dto.setOtrasBecas(beca.getOtrasBecas());
+            dto.setTipoBeca(beca.getTipoBeca());
             dto.setEstadoBeca(beca.getEstadoBeca());
             // No incluir documentosPDF en el DTO
             becaDTOs.add(dto);
@@ -114,11 +111,15 @@ public class BecaRest {
             tipoBeca = "transporte";
         }
 
+        LocalDateTime hoyAux = LocalDateTime.now();
+        Date hoy = Date.from(hoyAux.atZone(ZoneId.systemDefault()).toInstant());
+        // Crear nueva beca
         // Crear nueva beca
         Becas newBeca = new Becas();
         newBeca.setEstudiante(estudiante);
         newBeca.setTipoBeca(tipoBeca);
         newBeca.setEstadoBeca("Iniciado");
+        newBeca.setFechaDeSolicitud(hoy);
 
         Estudiante estBeca = getEstRepository.getReferenceById(estudiante);
 

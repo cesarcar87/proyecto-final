@@ -1,7 +1,6 @@
 package com.proyecto.sistema;
 
 import com.proyecto.sistema.rest.repositorios.GetTutEntreParRespository;
-import com.proyecto.sistema.rest.repositorios.GetUCRepository;
 import jakarta.inject.Named;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;

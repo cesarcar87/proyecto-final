@@ -3,7 +3,6 @@ package com.proyecto.sistema.rest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.proyecto.sistema.clases.sistema.Becas;
 import com.proyecto.sistema.clases.sistema.TutEntrePar;
 import com.proyecto.sistema.rest.servicios.TutEntreParesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +27,13 @@ public class TutEntreParesRest {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @GetMapping("/listarTutoriasCreadas")
+    public List<TutEntrePar> listarTodasLasTutorias() {
+        // Llamar al servicio de autenticación
+        System.out.println("ingresa a llamado");
+        return tutEntreParesService.buscarTodasLasTutorias();
+    }
 
     @PostMapping("/nuevaTutEntrePares")
     public ResponseEntity<String> nuevaTutoria(@RequestBody TutEntrePar request) throws IOException {
@@ -65,7 +71,7 @@ public class TutEntreParesRest {
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
         RestTemplate restTemplate = new RestTemplate();
 
-        String camundaUrl = "http://localhost:8080/engine-rest/process-definition/key/TutEntrePares/start";
+        String camundaUrl = "http://localhost:8080/engine-rest/process-definition/key/TutoriaEntrePares/start";
 
         try {
             // Iniciar el proceso en Camunda
@@ -176,6 +182,8 @@ public class TutEntreParesRest {
 
     @PostMapping("/confirmarTutoria")
     public ResponseEntity<String> confirmarTutoria(@RequestParam Long idTutEntrePar, @RequestParam String estadoTutoria) {
+        System.out.println("idTutEntrePar recibido: " + idTutEntrePar);
+        System.out.println("estadoTutoria recibido: " + estadoTutoria);
         try {
             // Validar el parámetro estadoTutoria
             if (!estadoTutoria.equalsIgnoreCase("Aceptado") && !estadoTutoria.equalsIgnoreCase("Rechazado")) {
@@ -259,5 +267,7 @@ public class TutEntreParesRest {
             return mensaje;
         }
     }
+
+
 
 }

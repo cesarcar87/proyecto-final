@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_19xhu58" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.25.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.21.0">
   <bpmn:collaboration id="Collaboration_07fjkrl">
-    <bpmn:participant id="Participant_0usb9rq" name="Tutorias entre pares" processRef="TutEntrePares" />
+    <bpmn:participant id="Participant_0usb9rq" name="Tutorias entre pares" processRef="TutoriaEntrePares" />
   </bpmn:collaboration>
-  <bpmn:process id="TutEntrePares" isExecutable="true" camunda:historyTimeToLive="7">
+  <bpmn:process id="TutoriaEntrePares" isExecutable="true" camunda:historyTimeToLive="7">
     <bpmn:laneSet id="LaneSet_1qwec80">
       <bpmn:lane id="Lane_0uig2y0" name="Coordinador">
         <bpmn:flowNodeRef>Activity_15zkoja</bpmn:flowNodeRef>
@@ -80,7 +80,7 @@
       <bpmn:incoming>Flow_1e45aq3</bpmn:incoming>
       <bpmn:outgoing>Flow_0kmvt8t</bpmn:outgoing>
     </bpmn:sendTask>
-    <bpmn:serviceTask id="Activity_0asjc6g" name="Crea Salas de Google meet, define fechas y horarios" camunda:delegateExpression="#{servicioMeet}">
+    <bpmn:serviceTask id="Activity_0asjc6g" name="Crea Salas de Google meet, define fechas y horarios" camunda:delegateExpression="#{servicioMeetTutorias}">
       <bpmn:incoming>Flow_13g9ace</bpmn:incoming>
       <bpmn:outgoing>Flow_1e45aq3</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -134,9 +134,6 @@
       <bpmndi:BPMNShape id="Activity_1lywc09_di" bpmnElement="Activity_15zkoja">
         <dc:Bounds x="940" y="160" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1vwpfda_di" bpmnElement="Gateway_1vwpfda" isMarkerVisible="true">
-        <dc:Bounds x="855" y="375" width="50" height="50" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_100gbl7_di" bpmnElement="Activity_033nn3t">
         <dc:Bounds x="740" y="360" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -165,6 +162,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0j6y0h5_di" bpmnElement="Activity_0asjc6g">
         <dc:Bounds x="1200" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1vwpfda_di" bpmnElement="Gateway_1vwpfda" isMarkerVisible="true">
+        <dc:Bounds x="855" y="375" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_05ugcji" bpmnElement="Gateway_0scokfh" isMarkerVisible="true">
         <dc:Bounds x="1095" y="175" width="50" height="50" />

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -17,6 +18,7 @@ public class Becas {
     private String estadoBeca;
     private String tipoBeca;
     private String prcesoCamunda;
+    private Date fechaDeSolicitud;
 
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY) // Relación OneToMany con los documentos
@@ -79,5 +81,13 @@ public class Becas {
 
     public void setPrcesoCamunda(String prcesoCamunda) {
         this.prcesoCamunda = prcesoCamunda;
+    }
+
+    public Date getFechaDeSolicitud() {
+        return fechaDeSolicitud;
+    }
+
+    public void setFechaDeSolicitud(Date fechaDeSolicitud) {
+        this.fechaDeSolicitud = fechaDeSolicitud;
     }
 }

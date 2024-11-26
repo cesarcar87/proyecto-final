@@ -27,6 +27,7 @@ import java.util.Optional;
 @Service
 public class UsuarioService {
 
+
     @Autowired
     private GetUsuRepository getUsuRepository;
 
@@ -123,6 +124,20 @@ public class UsuarioService {
             return null; // Credenciales inválidas
         }
     }
+
+    public Usuario confirmarCorreo(String correo) {
+        // Buscar el usuario en la base de datos usando el repositorio
+        Usuario usuario = getUsuRepository.findByCorreo(correo);
+        // Validar el usuario encontrado
+        if (usuario != null) {
+            System.out.print("correo" + correo);
+            System.out.print("Se completo correctamente");
+            return usuario; // Inicio de sesión exitoso
+        } else {
+            return null; // Credenciales inválidas
+        }
+    }
+
 
 
 }

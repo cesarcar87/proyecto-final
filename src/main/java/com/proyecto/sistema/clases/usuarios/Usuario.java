@@ -18,6 +18,7 @@ public abstract class Usuario {
     private String documento;
     private String password;
     private String datosGoogle;
+    private Boolean esCoordinador;
 
     // Getters y setters
 
@@ -101,4 +102,11 @@ public abstract class Usuario {
         this.datosGoogle = datosGoogle;
     }
 
+    public Boolean getEsCoordinador() {
+        return esCoordinador;
+    }
+
+    public void setEsCoordinador(Boolean esCoordinador) {
+        this.esCoordinador = esCoordinador;
+    }
 }

@@ -6,7 +6,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.util.DateTime;
 import com.proyecto.servicios.GoogleMailApi;
-import com.proyecto.sistema.rest.repositorios.GetEstRepository;
 import jakarta.inject.Named;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -17,6 +16,7 @@ import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.services.calendar.model.ConferenceData;
 import com.google.api.services.calendar.model.ConferenceSolutionKey;
 import com.google.api.services.calendar.model.CreateConferenceRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -25,9 +25,10 @@ import java.util.UUID;
 import static org.glassfish.jersey.server.ServerProperties.APPLICATION_NAME;
 
 @Named
-public class ServicioMeet implements JavaDelegate {
+public class ServicioMeetBecas implements JavaDelegate {
 
-    static GoogleMailApi googleMailApi;
+    @Autowired
+    GoogleMailApi googleMailApi;
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
@@ -64,7 +65,7 @@ public class ServicioMeet implements JavaDelegate {
 
 
     // Método para crear una reunión en Google Calendar con Google Meet
-    public static String crearEventoConGoogleMeet(String summary, String description, String fechaInicio, String fechaFin) throws Exception {
+    public String crearEventoConGoogleMeet(String summary, String description, String fechaInicio, String fechaFin) throws Exception {
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
 

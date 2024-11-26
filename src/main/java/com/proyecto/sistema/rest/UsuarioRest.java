@@ -4,9 +4,12 @@ import com.proyecto.sistema.clases.usuarios.Estudiante;
 import com.proyecto.sistema.clases.usuarios.Usuario;
 import com.proyecto.sistema.rest.servicios.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -54,5 +57,14 @@ public class UsuarioRest {
         return usuarioService.modificarEstudiante(EstudianteUPD);
     }
 
+    @PostMapping("/confirmarCorreo")
+    public Usuario confirmarCorreo(@RequestBody String correoEstudiante) {
+        System.out.println(correoEstudiante);
+        return usuarioService.confirmarCorreo(correoEstudiante);
+    }
+
+    public String decodificarCorreo(String correoCodificado) {
+        return URLDecoder.decode(correoCodificado, StandardCharsets.UTF_8);
+    }
 
 }

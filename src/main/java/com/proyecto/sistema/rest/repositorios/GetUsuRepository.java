@@ -1,5 +1,4 @@
 package com.proyecto.sistema.rest.repositorios;
-import com.proyecto.sistema.clases.usuarios.Estudiante;
 import com.proyecto.sistema.clases.usuarios.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 
