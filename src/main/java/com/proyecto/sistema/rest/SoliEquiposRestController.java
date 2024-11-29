@@ -3,6 +3,7 @@ package com.proyecto.sistema.rest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.proyecto.sistema.clases.sistema.Documento;
 import com.proyecto.sistema.clases.sistema.SolicitudEquipos;
 import com.proyecto.sistema.rest.servicios.SoliEquiposService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +13,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.ZoneId;
+import java.util.*;
 
 
 @RestController
@@ -31,26 +32,46 @@ public class SoliEquiposRestController {
     private RestTemplate restTemplate;
 
     // Crear una solicitud
-    @PostMapping("/crearSolicitud")
-    public ResponseEntity<Map<String, String>> crearSolicitud(@RequestBody SolicitudEquipos request) {
-        System.out.println("Equipo Solicitado: " + request.getEquipoSol());
-        System.out.println("Descripción: " + request.getDescripcionSol());
-        System.out.println("Estudiante Solicitante: " + request.getEstudianteSol());
+    @PostMapping(value = "/crearSolicitud", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Map<String, String>> crearSolicitud(
+            @RequestParam("equipoSol") String equipoSol,
+            @RequestParam("descripcionSol") String descripcionSol,
+            @RequestParam("estudianteSol") Long estudianteSol,
+            @RequestParam(value = "documentosPDFEst", required = false) MultipartFile documentosPDFEst) throws IOException {
+
+        System.out.println("Equipo Solicitado: " + equipoSol);
+        System.out.println("Descripción: " + descripcionSol);
+        System.out.println("Estudiante Solicitante: " + estudianteSol);
+        System.out.println("Documentos PDF: " + documentosPDFEst);
+
 
         // Preparar las variables para Camunda
         Map<String, Object> variables = new HashMap<>();
-        variables.put("equipoSol", Map.of("value", request.getEquipoSol(), "type", "String"));
-        variables.put("descripcionSol", Map.of("value", request.getDescripcionSol(), "type", "String"));
-        variables.put("estudianteSol", Map.of("value", request.getEstudianteSol(), "type", "Long"));
+        variables.put("equipoSol", Map.of("value", equipoSol, "type", "String"));
+        variables.put("descripcionSol", Map.of("value", descripcionSol, "type", "String"));
+        variables.put("estudianteSol", Map.of("value", estudianteSol, "type", "Long"));
 
         // Asignar la fecha actual como variable
         LocalDate today = LocalDate.now();
-        Long fechaComoLong = today.getYear() * 10000L + today.getMonthValue() * 100 + today.getDayOfMonth();
-        variables.put("fechaSolicitud", Map.of("value", fechaComoLong, "type", "Long"));
+        Date fechaDeHoy = Date.from(today.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        variables.put("fechaSolicitud", Map.of("value", today, "type", "Long"));
 
-        request.setFechaSolicitud(fechaComoLong);
+        // Crear una nueva instancia de solicitud
+        SolicitudEquipos request = new SolicitudEquipos();
 
-        // Preparar el cuerpo de la solicitud a Camunda
+        if (documentosPDFEst != null && !documentosPDFEst.isEmpty()) {
+            Documento documento = new Documento();
+            documento.setContenidoPDF(documentosPDFEst.getBytes());
+            request.setDocumentosPDFEst(List.of(documento));
+        }
+
+        request.setEquipoSol(equipoSol);
+        request.setDescripcionSol(descripcionSol);
+        request.setEstudianteSol(estudianteSol);
+        request.setFechaDeSolicitud(fechaDeHoy);
+//        request.setDocumentosPDFEst(documentos);
+
+        // Preparar el cuerpo de la solicitud para Camunda
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("variables", variables);
 
@@ -71,15 +92,16 @@ public class SoliEquiposRestController {
 
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode rootNode = mapper.readTree(response.getBody());
-                String processInstanceId = rootNode.path("id").asText();  // Obtener el processInstanceId
+                String processInstanceId = rootNode.path("id").asText(); // Obtener el processInstanceId
                 request.setProcesoCamundaSol(processInstanceId);
+
+                // Guardar la solicitud en la base de datos
+                soliEquiposService.crearSolicitud(request);
 
                 // Devolver un JSON en lugar de texto plano
                 Map<String, String> respuesta = new HashMap<>();
                 respuesta.put("mensaje", "Proceso iniciado en Camunda correctamente");
                 respuesta.put("camundaResponse", response.getBody());
-
-                soliEquiposService.crearSolicitud(request);
                 return ResponseEntity.ok(respuesta);
             } else {
                 System.err.println("Error al iniciar el proceso en Camunda: " + response.getStatusCode());
@@ -92,6 +114,7 @@ public class SoliEquiposRestController {
             return ResponseEntity.status(500).body(Map.of("error", errorMessage));
         }
     }
+
 
     @PostMapping("/avanzarSolicitud")
     public ResponseEntity<Map<String, String>> avanzarSolicitud(

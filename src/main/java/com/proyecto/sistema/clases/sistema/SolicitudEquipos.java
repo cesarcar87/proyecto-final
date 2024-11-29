@@ -1,7 +1,10 @@
 package com.proyecto.sistema.clases.sistema;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -12,17 +15,19 @@ public class SolicitudEquipos {
     private Long idSolicitud;
 
     private Long estudianteSol;
-    private Long fechaSolicitud;
+    private Date fechaDeSolicitud;
     private String equipoSol;
     private String descripcionSol;
+    private String estadoSolicitud;
     private String procesoCamundaSol;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "idSolicitud")  // Define la clave foránea explícitamente si es necesario
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY) // Relación OneToMany con los documentos
+    @Fetch(FetchMode.JOIN)
     private List<Documento> documentosPDFEst;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "idSolicitud")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY) // Relación OneToMany con los documentos
+    @Fetch(FetchMode.JOIN)
     private List<Documento> documentosPDFCor;
 
     public Long getIdSolicitud() {
@@ -41,12 +46,12 @@ public class SolicitudEquipos {
         this.estudianteSol = estudianteSol;
     }
 
-    public Long getFechaSolicitud() {
-        return fechaSolicitud;
+    public Date getFechaDeSolicitud() {
+        return fechaDeSolicitud;
     }
 
-    public void setFechaSolicitud(Long fechaSolicitud) {
-        this.fechaSolicitud = fechaSolicitud;
+    public void setFechaDeSolicitud(Date fechaDeSolicitud) {
+        this.fechaDeSolicitud = fechaDeSolicitud;
     }
 
     public String getEquipoSol() {
@@ -87,6 +92,14 @@ public class SolicitudEquipos {
 
     public void setProcesoCamundaSol(String procesoCamundaSol) {
         this.procesoCamundaSol = procesoCamundaSol;
+    }
+
+    public String getEstadoSolicitud() {
+        return estadoSolicitud;
+    }
+
+    public void setEstadoSolicitud(String estadoSolicitud) {
+        this.estadoSolicitud = estadoSolicitud;
     }
 }
 

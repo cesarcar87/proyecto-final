@@ -1,6 +1,8 @@
 package com.proyecto.servicios;
 
 import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
+import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -38,28 +40,69 @@ public class GoogleMailApi {
 
     // Cargar las credenciales del archivo credentials.json
     public static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws Exception {
-        // Verificar si el archivo de credenciales existe
         File credentialsFile = new File(CREDENTIALS_FILE_PATH);
         if (!credentialsFile.exists()) {
             throw new Exception("El archivo credentials.json no se encontró en " + CREDENTIALS_FILE_PATH);
         }
 
-        // Cargar el archivo credentials.json
+        System.out.println("Cargando credenciales desde: " + CREDENTIALS_FILE_PATH);
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(new FileInputStream(credentialsFile)));
 
-        // Configurar el flujo de autenticación
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
                 HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
                 .setDataStoreFactory(new FileDataStoreFactory(new File(TOKENS_DIRECTORY_PATH))) // Almacena tokens
-                .setAccessType("offline")
+                .setAccessType("offline") // Solicita Refresh Token
+                .setApprovalPrompt("force") // Fuerza consentimiento
                 .build();
 
-        // Si las credenciales están almacenadas, se cargan automáticamente
-        return flow.loadCredential("user");
+        System.out.println("Intentando cargar credenciales...");
+        Credential credential = flow.loadCredential("user");
+
+        if (credential == null) {
+            System.out.println("No se encontraron credenciales almacenadas. Iniciando flujo de autorización...");
+            try {
+                LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
+                credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+                System.out.println("Credenciales obtenidas exitosamente.");
+            } catch (Exception e) {
+                System.err.println("Error durante la autorización: " + e.getMessage());
+                throw e;
+            }
+        }
+
+        if (credential == null) {
+            throw new Exception("El flujo de autorización no devolvió credenciales. Verifica el almacenamiento y la configuración de OAuth.");
+        }
+
+        // Depuración del estado de los tokens
+        System.out.println("Access Token: " + (credential.getAccessToken() != null ? credential.getAccessToken() : "No disponible"));
+        System.out.println("Refresh Token: " + (credential.getRefreshToken() != null ? credential.getRefreshToken() : "No disponible"));
+        System.out.println("Token Expiration: " + (credential.getExpirationTimeMilliseconds() != null
+                ? new Date(credential.getExpirationTimeMilliseconds())
+                : "No disponible"));
+
+        if (credential.getAccessToken() == null ||
+                (credential.getExpirationTimeMilliseconds() != null &&
+                        credential.getExpirationTimeMilliseconds() < System.currentTimeMillis())) {
+            System.out.println("El token ha expirado o no está disponible. Intentando refrescar...");
+            boolean refreshed = credential.refreshToken();
+            if (refreshed) {
+                System.out.println("Token refrescado exitosamente.");
+            } else {
+                throw new Exception("No se pudo refrescar el token. Verifica las configuraciones del cliente OAuth.");
+            }
+        }
+
+        return credential;
     }
 
     // Enviar un correo utilizando Gmail API
     public static void enviarCorreo(String destinatario, String asunto, String cuerpoMensaje) throws Exception {
+        // Validar el destinatario
+        if (destinatario == null || destinatario.trim().isEmpty()) {
+            throw new IllegalArgumentException("El destinatario es requerido para enviar un correo.");
+        }
+
         // Construir el objeto de transporte HTTP
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
 
@@ -87,7 +130,7 @@ public class GoogleMailApi {
         Message message = new Message();
         message.setRaw(encodedEmail);
         service.users().messages().send("me", message).execute();
-        System.out.println("Correo enviado exitosamente");
+        System.out.println("Correo enviado exitosamente a " + destinatario);
     }
 
     // Método para crear el mensaje MIME
@@ -96,10 +139,18 @@ public class GoogleMailApi {
         Session session = Session.getDefaultInstance(props, null);
         MimeMessage email = new MimeMessage(session);
 
+        // Validar parámetros
+        if (destinatario == null || destinatario.trim().isEmpty()) {
+            throw new MessagingException("El destinatario es requerido para crear el correo.");
+        }
+        if (remitente == null || remitente.trim().isEmpty()) {
+            throw new MessagingException("El remitente es requerido para crear el correo.");
+        }
+
         email.setFrom(new InternetAddress(remitente));
         email.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(destinatario));
-        email.setSubject(asunto);
-        email.setText(cuerpoTexto);
+        email.setSubject(asunto != null ? asunto : "Sin Asunto");
+        email.setText(cuerpoTexto != null ? cuerpoTexto : "Sin Contenido");
         return email;
     }
 }

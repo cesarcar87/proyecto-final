@@ -173,7 +173,9 @@
       <bpmn:outgoing>Flow_1i3d67x</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_09v0ck4" sourceRef="Activity_0dhqdww" targetRef="Gateway_0ftmfxk" />
-    <bpmn:sequenceFlow id="Flow_1i3d67x" name="Rechazado" sourceRef="Gateway_0ftmfxk" targetRef="Activity_1y78euk" />
+    <bpmn:sequenceFlow id="Flow_1i3d67x" name="Rechazado" sourceRef="Gateway_0ftmfxk" targetRef="Activity_1y78euk">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{estadoBeca=="Rechazado"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmn:message id="Message_2kdmttt" name="Message_2kdmttt" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -336,7 +338,7 @@
         <di:waypoint x="500" y="340" />
         <di:waypoint x="500" y="415" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="429" y="374" width="62" height="14" />
+          <dc:Bounds x="509" y="363" width="62" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_15tigm7_di" bpmnElement="Flow_15tigm7">

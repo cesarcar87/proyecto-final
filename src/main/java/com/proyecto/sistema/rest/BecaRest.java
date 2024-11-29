@@ -83,6 +83,7 @@ public class BecaRest {
             dto.setOtrasBecas(beca.getOtrasBecas());
             dto.setTipoBeca(beca.getTipoBeca());
             dto.setEstadoBeca(beca.getEstadoBeca());
+            dto.setFechaDeSolicitud(beca.getFechaDeSolicitud());
             // No incluir documentosPDF en el DTO
             becaDTOs.add(dto);
         }

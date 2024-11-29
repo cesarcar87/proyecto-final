@@ -2,7 +2,6 @@ package com.proyecto.sistema.estudiante;
 import jakarta.inject.Named;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
-import com.fabdelgado.ciuy.*;
 
 @Named
 public class ValidarDatos implements JavaDelegate {
@@ -69,18 +68,16 @@ public class ValidarDatos implements JavaDelegate {
     // Valida si el documento uruguayo es válido
     public static String esDocumentoValido(String documento) {
         String error = "valido";
-        Boolean verDoc;
 
         if (documento == "1") {
             //Validador de la cedula
-            Validator validator = new Validator();
-            verDoc = validator.validateCi(documento);
+
             //Si no tiene el guion antes, se lo agrego
             if (documento.substring(0, documento.length() - 1) != "-") {
                 documento = documento.substring(0, documento.length() - 1) + "-" + documento.charAt(documento.length() - 1);
             }
             // Documento uruguayo formato, 7 o 8 dígitos seguido de un guion y un dígito (ej: 1234567-8)
-            if (documento != null && documento.matches("\\d{7,8}-\\d") && verDoc) {
+            if (documento != null && documento.matches("\\d{7,8}-\\d")) {
                 error = "valido";
             } else {
                 error = "1 - El documento ingresado es invalido.";

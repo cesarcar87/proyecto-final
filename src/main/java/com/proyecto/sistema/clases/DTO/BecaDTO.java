@@ -1,5 +1,7 @@
 package com.proyecto.sistema.clases.DTO;
 
+import java.util.Date;
+
 public class BecaDTO {
     private Long idBeca;
     private Long estudiante;
@@ -7,6 +9,7 @@ public class BecaDTO {
     private Boolean reqLlamado;
     private String tipoBeca;
     private String estadoBeca;
+    private Date fechaDeSolicitud;
 
     public Long getIdBeca() {
         return idBeca;
@@ -54,5 +57,13 @@ public class BecaDTO {
 
     public void setTipoBeca(String tipoBeca) {
         this.tipoBeca = tipoBeca;
+    }
+
+    public Date getFechaDeSolicitud() {
+        return fechaDeSolicitud;
+    }
+
+    public void setFechaDeSolicitud(Date fechaDeSolicitud) {
+        this.fechaDeSolicitud = fechaDeSolicitud;
     }
 }
