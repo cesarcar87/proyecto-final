@@ -31,18 +31,27 @@ public class SoliEquiposRestController {
     @Autowired
     private RestTemplate restTemplate;
 
-    // Crear una solicitud
     @PostMapping(value = "/crearSolicitud", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Map<String, String>> crearSolicitud(
             @RequestParam("equipoSol") String equipoSol,
             @RequestParam("descripcionSol") String descripcionSol,
             @RequestParam("estudianteSol") Long estudianteSol,
-            @RequestParam(value = "documentosPDFEst", required = false) MultipartFile documentosPDFEst) throws IOException {
+            @RequestParam(value = "documentosPDFEst", required = false) MultipartFile[] documentosPDFEst) throws IOException {
 
         System.out.println("Equipo Solicitado: " + equipoSol);
         System.out.println("Descripción: " + descripcionSol);
         System.out.println("Estudiante Solicitante: " + estudianteSol);
-        System.out.println("Documentos PDF: " + documentosPDFEst);
+
+
+        // Procesar los archivos PDF y crear la lista de Documentos
+        List<Documento> documentos = new ArrayList<>();
+        for (MultipartFile archivoPdf : documentosPDFEst) {
+            if (!archivoPdf.isEmpty()) {
+                Documento documento = new Documento();
+                documento.setContenidoPDF(archivoPdf.getBytes()); // Guardar el archivo como byte[]
+                documentos.add(documento); // Agregar el documento a la lista
+            }
+        }
 
         // Validaciones de datos
         if (equipoSol == null || equipoSol.isBlank()) {
@@ -54,9 +63,6 @@ public class SoliEquiposRestController {
         if (estudianteSol == null || estudianteSol <= 0) {
             return ResponseEntity.badRequest().body(Map.of("error", "El campo 'estudianteSol' debe ser un número positivo."));
         }
-
-
-
 
         // Preparar las variables para Camunda
         Map<String, Object> variables = new HashMap<>();
@@ -70,17 +76,11 @@ public class SoliEquiposRestController {
 
         // Crear una nueva instancia de solicitud
         SolicitudEquipos request = new SolicitudEquipos();
-
-        if (documentosPDFEst != null && !documentosPDFEst.isEmpty()) {
-            Documento documento = new Documento();
-            documento.setContenidoPDF(documentosPDFEst.getBytes());
-            request.setDocumentosPDFEst(List.of(documento));
-        }
-
         request.setEquipoSol(equipoSol);
         request.setDescripcionSol(descripcionSol);
         request.setEstudianteSol(estudianteSol);
         request.setFechaDeSolicitud(fechaDeHoy);
+        request.setDocumentosPDFEst(documentos); // Convertir lista de vuelta a arreglo si es necesario
         request.setEstadoSolicitud("Solicitado");
 
         // Preparar el cuerpo de la solicitud para Camunda
@@ -126,6 +126,7 @@ public class SoliEquiposRestController {
             return ResponseEntity.status(500).body(Map.of("error", errorMessage));
         }
     }
+
 
 
     @PostMapping("/avanzarSolicitud")
