@@ -1,5 +1,6 @@
 package com.proyecto.sistema.rest.servicios;
 
+import com.proyecto.sistema.clases.sistema.Becas;
 import com.proyecto.sistema.clases.sistema.SolicitudEquipos;
 import com.proyecto.sistema.rest.repositorios.GetSolEquiRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,5 +55,15 @@ public class SoliEquiposService {
             return (List<Documento>) solicitud.getDocumentosPDFEst();  // O 'documentosPDFCor' dependiendo de los requerimientos
         }
         return null;
+    }
+
+    public SolicitudEquipos modificarSolicitud(Long idSolicitud, SolicitudEquipos nuevaSolicitud) {
+        // Verificamos si la beca con el ID proporcionado existe
+        return getSolEquiRepository.findById(idSolicitud).map(solicitudExistente -> {
+            // Actualizamos los campos de la beca existente con los datos de nuevaBeca
+            nuevaSolicitud.setEstadoSolicitud(nuevaSolicitud.getEstadoSolicitud());
+            // Guardamos la beca actualizada
+            return getSolEquiRepository.save(solicitudExistente);
+        }).orElseThrow(() -> new RuntimeException("No se encontró la Solicitud con el ID: " + idSolicitud));
     }
 }

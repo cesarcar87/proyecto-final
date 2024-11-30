@@ -44,6 +44,19 @@ public class SoliEquiposRestController {
         System.out.println("Estudiante Solicitante: " + estudianteSol);
         System.out.println("Documentos PDF: " + documentosPDFEst);
 
+        // Validaciones de datos
+        if (equipoSol == null || equipoSol.isBlank()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "El campo 'equipoSol' es obligatorio."));
+        }
+        if (descripcionSol == null || descripcionSol.isBlank()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "El campo 'descripcionSol' es obligatorio."));
+        }
+        if (estudianteSol == null || estudianteSol <= 0) {
+            return ResponseEntity.badRequest().body(Map.of("error", "El campo 'estudianteSol' debe ser un número positivo."));
+        }
+
+
+
 
         // Preparar las variables para Camunda
         Map<String, Object> variables = new HashMap<>();
@@ -54,7 +67,6 @@ public class SoliEquiposRestController {
         // Asignar la fecha actual como variable
         LocalDate today = LocalDate.now();
         Date fechaDeHoy = Date.from(today.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        variables.put("fechaSolicitud", Map.of("value", today, "type", "Long"));
 
         // Crear una nueva instancia de solicitud
         SolicitudEquipos request = new SolicitudEquipos();
@@ -69,7 +81,7 @@ public class SoliEquiposRestController {
         request.setDescripcionSol(descripcionSol);
         request.setEstudianteSol(estudianteSol);
         request.setFechaDeSolicitud(fechaDeHoy);
-//        request.setDocumentosPDFEst(documentos);
+        request.setEstadoSolicitud("Solicitado");
 
         // Preparar el cuerpo de la solicitud para Camunda
         Map<String, Object> requestBody = new HashMap<>();
@@ -127,6 +139,17 @@ public class SoliEquiposRestController {
                     "error", "El estado debe ser 'Aceptada' o 'Rechazada'"
             ));
         }
+
+        Optional<SolicitudEquipos> optionalSolicitudEquipos = soliEquiposService.obtenerSolicitudPorId(idSolicitud);
+
+        if (optionalSolicitudEquipos.isPresent()) {
+            SolicitudEquipos solicitudEquipos = optionalSolicitudEquipos.get();
+            solicitudEquipos.setEstadoSolicitud(estadoSolicitud);
+            soliEquiposService.modificarSolicitud(idSolicitud, solicitudEquipos);
+        } else {
+            throw new IllegalArgumentException("No se encontró una solicitud con el ID: " + idSolicitud);
+        }
+
         // Preparar las variables para completar la tarea en Camunda
         Map<String, Object> variables = new HashMap<>();
         variables.put("estado", Map.of("value", estadoSolicitud, "type", "String"));
