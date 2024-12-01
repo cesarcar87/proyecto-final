@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.proyecto.sistema.clases.sistema.Documento;
 import com.proyecto.sistema.clases.sistema.SolicitudEquipos;
+import com.proyecto.sistema.exceptions.ResourceNotFoundException;
 import com.proyecto.sistema.rest.servicios.SoliEquiposService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -15,10 +16,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 
 @RestController
@@ -273,9 +277,63 @@ public class SoliEquiposRestController {
         return "";
     }
 
+    @GetMapping("/documentosEst/{solEquipoId}")
+    public ResponseEntity<byte[]> descargarDocumentosEstudiante(@PathVariable Long solEquipoId) throws IOException {
+        // Buscar los documentos asociados al ID de la beca
+        List<Documento> documentos = soliEquiposService.descargarDocumentosEst(solEquipoId);
 
+        if (documentos.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron documentos para la solicitud con ID: " + solEquipoId);
+        }
 
+        // Crear un archivo ZIP en memoria
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (ZipOutputStream zos = new ZipOutputStream(baos)) {
+            for (Documento documento : documentos) {
+                // Crear una nueva entrada en el archivo ZIP
+                ZipEntry zipEntry = new ZipEntry("documento_" + documento.getIdDocumento() + ".pdf");
+                zos.putNextEntry(zipEntry);
+                // Agregar el contenido del documento al archivo ZIP
+                zos.write(documento.getContenidoPDF());
+                zos.closeEntry();
+            }
+        }
 
+        // Configurar la respuesta con el archivo ZIP
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"documentos_solicitudEquipos_" + solEquipoId + ".zip\"")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(baos.toByteArray());
+    }
+
+    @GetMapping("/documentosCor/{solEquipoId}")
+    public ResponseEntity<byte[]> descargarDocumentosCoordinador(@PathVariable Long solEquipoId) throws IOException {
+        // Buscar los documentos asociados al ID de la beca
+        List<Documento> documentos = soliEquiposService.descargarDocumentosCor(solEquipoId);
+
+        if (documentos.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron documentos para la solicitud con ID: " + solEquipoId);
+        }
+
+        // Crear un archivo ZIP en memoria
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (ZipOutputStream zos = new ZipOutputStream(baos)) {
+            for (Documento documento : documentos) {
+                // Crear una nueva entrada en el archivo ZIP
+                ZipEntry zipEntry = new ZipEntry("documento_" + documento.getIdDocumento() + ".pdf");
+                zos.putNextEntry(zipEntry);
+                // Agregar el contenido del documento al archivo ZIP
+                zos.write(documento.getContenidoPDF());
+                zos.closeEntry();
+            }
+        }
+
+        // Configurar la respuesta con el archivo ZIP
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"documentos_solicitudEquipos_" + solEquipoId + ".zip\"")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(baos.toByteArray());
+    }
 
 }
 

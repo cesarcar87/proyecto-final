@@ -47,12 +47,22 @@ public class SoliEquiposService {
     // Este método debería ser parte de otro servicio de gestión de documentos,
     // ya que el archivo puede estar almacenado de manera específica en el sistema.
     // Asumimos que el objeto Documento tiene una referencia al archivo o ruta para descargarlo.
-    public <Documento> List<Documento> descargarDocumentos(Long idSolicitud) {
+    public <Documento> List<Documento> descargarDocumentosEst(Long idSolicitud) {
         Optional<SolicitudEquipos> solicitudEquipos = getSolEquiRepository.findById(idSolicitud);
         if (solicitudEquipos.isPresent()) {
             SolicitudEquipos solicitud = solicitudEquipos.get();
             // Aquí se devuelven los documentos asociados
             return (List<Documento>) solicitud.getDocumentosPDFEst();  // O 'documentosPDFCor' dependiendo de los requerimientos
+        }
+        return null;
+    }
+
+    public <Documento> List<Documento> descargarDocumentosCor(Long idSolicitud) {
+        Optional<SolicitudEquipos> solicitudEquipos = getSolEquiRepository.findById(idSolicitud);
+        if (solicitudEquipos.isPresent()) {
+            SolicitudEquipos solicitud = solicitudEquipos.get();
+            // Aquí se devuelven los documentos asociados
+            return (List<Documento>) solicitud.getDocumentosPDFCor();  // O 'documentosPDFCor' dependiendo de los requerimientos
         }
         return null;
     }
