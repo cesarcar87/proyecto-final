@@ -3,8 +3,11 @@ package com.proyecto.sistema.rest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.proyecto.sistema.clases.DTO.UnidadCurricularDTO;
 import com.proyecto.sistema.clases.sistema.TutEntrePar;
+import com.proyecto.sistema.clases.sistema.UnidadCurricular;
 import com.proyecto.sistema.rest.servicios.TutEntreParesService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -43,16 +46,10 @@ public class TutEntreParesRest {
 
         // Preparar las variables para Camunda
         Map<String, Object> variables = new HashMap<>();
-        List<Long> estudiantesTutorados = request.getEstudiantesTutorados();
+        Long estudiantesTutorados = request.getEstudiantesTutorados();
 
-        if (estudiantesTutorados != null && estudiantesTutorados.size() >= 4) {
-            variables.put("estudiante1", Map.of("value", estudiantesTutorados.get(0), "type", "Long"));
-            variables.put("estudiante2", Map.of("value", estudiantesTutorados.get(1), "type", "Long"));
-            variables.put("estudiante3", Map.of("value", estudiantesTutorados.get(2), "type", "Long"));
-            variables.put("estudiante4", Map.of("value", estudiantesTutorados.get(3), "type", "Long"));
-        } else {
-            return ResponseEntity.badRequest().body("Se necesitan al menos 4 estudiantes.");
-        }
+        variables.put("estudiante1", Map.of("value", estudiantesTutorados, "type", "Long"));
+        variables.put("estudiante1", Map.of("value", estudiantesTutorados, "type", "Long"));
 
         if (request.getUnidadCurricularTutoria() != null) {
             variables.put("unidadCurricular", Map.of("value", request.getUnidadCurricularTutoria(), "type", "String"));
@@ -265,6 +262,24 @@ public class TutEntreParesRest {
         } else {
             mensaje = "No se encontraron tareas activas para el processInstanceId: " + idCamunda;
             return mensaje;
+        }
+    }
+
+    @GetMapping("/{idUc}")
+    public ResponseEntity<UnidadCurricularDTO> obtenerUnidadCurricular(@PathVariable Long idUc) {
+        try {
+            UnidadCurricular unidadCurricular = tutEntreParesService.obtgenerUC(idUc);
+            UnidadCurricularDTO dto = new UnidadCurricularDTO(
+                    unidadCurricular.getIdUnidadCurricular(),
+                    unidadCurricular.getCarrera(),
+                    unidadCurricular.getNombreUC(),
+                    unidadCurricular.getSemestreUC()
+            );
+            return ResponseEntity.ok(dto);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 

@@ -26,18 +26,8 @@ public class AgendaDatosYEstado  implements JavaDelegate {
 
         // Obtener las variables de estudiante individuales
         Long estudiante1 = (Long) delegateExecution.getVariable("estudiante1");
-        Long estudiante2 = (Long) delegateExecution.getVariable("estudiante2");
-        Long estudiante3 = (Long) delegateExecution.getVariable("estudiante3");
-        Long estudiante4 = (Long) delegateExecution.getVariable("estudiante4");
 
-        List<Long> estudiantesTutorados = new ArrayList<>();
-
-        estudiantesTutorados.add(estudiante1);
-        estudiantesTutorados.add(estudiante2);
-        estudiantesTutorados.add(estudiante3);
-        estudiantesTutorados.add(estudiante4);
-
-        tutEntreParnew.setEstudiantesTutorados(estudiantesTutorados);
+        tutEntreParnew.setEstudiantesTutorados(estudiante1);
         tutEntreParnew.setUnidadCurricularTutoria(unidadCurricular);
         tutEntreParnew.setEstadoTutoria("Esperando Tutor");
         tutEntreParnew.setDescripcionTutoria(descripcionTutoria);

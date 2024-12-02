@@ -1,8 +1,11 @@
 package com.proyecto.sistema.clases.sistema;
 
 import jakarta.persistence.*;
+import spinjar.com.fasterxml.jackson.annotation.JsonIgnore;
+import spinjar.com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class UnidadCurricular {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -11,6 +14,9 @@ public class UnidadCurricular {
     private String carrera;
     private String nombreUC;
     private Long semestreUC;
+
+    @JsonIgnore
+    private transient Object hibernateLazyInitializer;
 
     public Long getIdUnidadCurricular() {
         return idUnidadCurricular;

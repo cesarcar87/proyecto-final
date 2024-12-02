@@ -11,9 +11,7 @@ public class TutEntrePar {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idTutoria;
 
-    @ElementCollection
-    private List<Long> estudiantesTutorados;
-
+    private Long estudiantesTutorados;
     private Long estudianteTutor;
     private Long unidadCurricularTutoria;
     private String descripcionTutoria;
@@ -28,11 +26,11 @@ public class TutEntrePar {
         this.idTutoria = idTutoria;
     }
 
-    public List<Long> getEstudiantesTutorados() {
+    public Long getEstudiantesTutorados() {
         return estudiantesTutorados;
     }
 
-    public void setEstudiantesTutorados(List<Long> estudiantesTutorados) {
+    public void setEstudiantesTutorados(Long estudiantesTutorados) {
         this.estudiantesTutorados = estudiantesTutorados;
     }
 
