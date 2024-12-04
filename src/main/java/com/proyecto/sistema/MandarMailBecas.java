@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class MandarMailBecas implements JavaDelegate {
 
     @Autowired
-    GoogleMailApi apiDeMails;
+    private GoogleMailApi googleMailApi;
     
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
@@ -23,7 +23,7 @@ public class MandarMailBecas implements JavaDelegate {
         String estudiante = (String) delegateExecution.getVariable("correoEstudiante");
         estado = (String) delegateExecution.getVariable("estadoBeca");
 
-        System.out.println("estado en mandar mail becas" + estado);
+        System.out.println("estado en mandar mail becas a" + estado);
 
         if(estado.equals("enviarMail")){
             cuerpoMensaje = "Se ah aceptado su solicitud de Beca, se le informara cuando el proceso de validacion por el director quede completo";
@@ -40,7 +40,8 @@ public class MandarMailBecas implements JavaDelegate {
             newEstadoBeca = "NotificadoRechazo";
         }
 
-        GoogleMailApi.enviarCorreo(estudiante,asunto,cuerpoMensaje);
+        String correoCoordinador = (String) delegateExecution.getVariable("correoCoordinador");
+        googleMailApi.enviarCorreo(correoCoordinador,estudiante,asunto,cuerpoMensaje);
         delegateExecution.setVariable("estadoBeca",newEstadoBeca);
     }
 }

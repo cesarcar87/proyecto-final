@@ -24,7 +24,7 @@ WORKDIR /app
 COPY --from=build /app/target/gestion-estudiantil-1.0.0-SNAPSHOT.jar app.jar
 
 # Copia el archivo client_secret.json al contenedor
-COPY src/main/resources/client_secret.json /app/resources/client_secret_768873216358-7cdlvnvoc4rfc8vesjkp78d7j3g4ejdc.apps.googleusercontent.com.json
+COPY src/main/resources/client_secret_768873216358-7cdlvnvoc4rfc8vesjkp78d7j3g4ejdc.apps.googleusercontent.com.json /app/resources/client_secret_768873216358-7cdlvnvoc4rfc8vesjkp78d7j3g4ejdc.apps.googleusercontent.com.json
 
 # Exponer el puerto donde correrá la aplicación
 EXPOSE 8080

@@ -92,7 +92,7 @@ public class TutEntreParesRest {
                 );
 
                 Map<String, Object> processVariables = Map.of(
-                        "estadoBeca", estadoBecaVar
+                        "estadoTutoria", estadoBecaVar
                 );
 
                 Map<String, Object> body = Map.of(
@@ -178,7 +178,7 @@ public class TutEntreParesRest {
     }
 
     @PostMapping("/confirmarTutoria")
-    public ResponseEntity<String> confirmarTutoria(@RequestParam Long idTutEntrePar, @RequestParam String estadoTutoria) {
+    public ResponseEntity<String> confirmarTutoria(@RequestParam Long idTutEntrePar, @RequestParam String estadoTutoria, @RequestParam String correoCoordinador) {
         System.out.println("idTutEntrePar recibido: " + idTutEntrePar);
         System.out.println("estadoTutoria recibido: " + estadoTutoria);
         try {
@@ -218,6 +218,7 @@ public class TutEntreParesRest {
             );
 
             Map<String, Object> variables = Map.of("estadoTutoria", estadoTutoriaVar);
+            variables.put("correoCoordinador", correoCoordinador);
             Map<String, Object> body = Map.of("variables", variables);
 
             // URL para completar la tarea en Camunda
@@ -245,7 +246,6 @@ public class TutEntreParesRest {
 
 
     public String BuscarIntanceId(String idCamunda) throws JsonProcessingException {
-        //Consulta a la base por el estado actual de la beca
 
         // Obtener el taskId utilizando el processInstanceId
         String taskUrl = "http://localhost:8080/engine-rest/task?processInstanceId=" + idCamunda;

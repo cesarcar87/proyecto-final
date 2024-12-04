@@ -35,8 +35,8 @@ public class GoogleMailApi {
             "https://www.googleapis.com/auth/calendar",
             "https://www.googleapis.com/auth/calendar.events"
     );
-    private static final String TOKENS_DIRECTORY_PATH = "tokens";
-    private static final String CREDENTIALS_FILE_PATH = "src/main/resources/client_secret_768873216358-7cdlvnvoc4rfc8vesjkp78d7j3g4ejdc.apps.googleusercontent.com.json";
+    private static final String TOKENS_DIRECTORY_PATH = "/app/tokens";
+    private static final String CREDENTIALS_FILE_PATH = "/app/resources/client_secret_768873216358-7cdlvnvoc4rfc8vesjkp78d7j3g4ejdc.apps.googleusercontent.com.json";
 
     // Cargar las credenciales del archivo credentials.json
     public static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws Exception {
@@ -97,7 +97,7 @@ public class GoogleMailApi {
     }
 
     // Enviar un correo utilizando Gmail API
-    public static void enviarCorreo(String destinatario, String asunto, String cuerpoMensaje) throws Exception {
+    public void enviarCorreo(String remitente, String destinatario, String asunto, String cuerpoMensaje) throws Exception {
         // Validar el destinatario
         if (destinatario == null || destinatario.trim().isEmpty()) {
             throw new IllegalArgumentException("El destinatario es requerido para enviar un correo.");
@@ -154,3 +154,5 @@ public class GoogleMailApi {
         return email;
     }
 }
+
+

@@ -43,7 +43,10 @@ public class MandarMailSolEquipos implements JavaDelegate {
             newEstado = "NotificadoRechazo";
         }
 
-        GoogleMailApi.enviarCorreo(estudiante,asunto,cuerpoMensaje);
+        String correoCoordinador = (String) delegateExecution.getVariable("correoCoordinador");
+
+        GoogleMailApi googleMailApi = new GoogleMailApi();
+        googleMailApi.enviarCorreo(correoCoordinador, estudiante, asunto, cuerpoMensaje);
         delegateExecution.setVariable("estado",newEstado);
     }
 }

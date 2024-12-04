@@ -232,14 +232,13 @@ public class BecaRest {
             @RequestParam Long idEstudiante,
             @RequestParam Long idBeca,
             @RequestParam String estadoBeca,
-            @RequestParam String tipoBeca) throws JsonProcessingException {
+            @RequestParam String tipoBeca,
+            @RequestParam String correoCoordinador) throws JsonProcessingException {
         // Llamar al servicio para continuar con la beca
         System.out.println("Parametros de avanzarBeca");
         System.out.println(idEstudiante);
         System.out.println(estadoBeca);
         System.out.println(tipoBeca);
-
-
 
         Becas BecaUpd = getBecRespository.getReferenceById(idBeca);
         String InstanceId = BuscarIntanceId(idBeca);
@@ -328,6 +327,7 @@ public class BecaRest {
         // Agregar las variables al cuerpo
         Map<String, Object> processVariables = new HashMap<>();
         processVariables.put("estadoBeca", estadoBecaVar);
+        processVariables.put("correoCoordinador", Map.of("value", correoCoordinador));
 
         // Crear el cuerpo de la solicitud
         Map<String, Object> body = new HashMap<>();

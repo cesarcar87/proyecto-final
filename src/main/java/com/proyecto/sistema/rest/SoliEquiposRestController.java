@@ -136,7 +136,8 @@ public class SoliEquiposRestController {
     @PostMapping("/avanzarSolicitud")
     public ResponseEntity<Map<String, String>> avanzarSolicitud(
             @RequestParam("idSolicitud") Long idSolicitud,
-            @RequestParam("estadoSolicitud") String estadoSolicitud) {
+            @RequestParam("estadoSolicitud") String estadoSolicitud,
+            @RequestParam("correoCoordinador") String correoCoordinador) {
 
         // Validar entrada
         if (!estadoSolicitud.equalsIgnoreCase("Aceptada") && !estadoSolicitud.equalsIgnoreCase("Rechazada")) {
@@ -158,6 +159,7 @@ public class SoliEquiposRestController {
         // Preparar las variables para completar la tarea en Camunda
         Map<String, Object> variables = new HashMap<>();
         variables.put("estado", Map.of("value", estadoSolicitud, "type", "String"));
+        variables.put("correoCoordinador", Map.of("value", correoCoordinador, "type", "String"));
 
         // Buscar la instancia del proceso asociado a esta solicitud (simulado aquí)
         String instanceId = buscarInstanceIdPorIdSolicitud(idSolicitud);
@@ -230,7 +232,6 @@ public class SoliEquiposRestController {
             return ResponseEntity.status(500).body(null); // Devuelve 500 en caso de error
         }
     }
-
 
 
     // Simular método para obtener la instancia del proceso asociada a una solicitud

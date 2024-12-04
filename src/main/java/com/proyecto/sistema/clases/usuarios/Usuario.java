@@ -17,7 +17,8 @@ public abstract class Usuario {
     private String tipoDocumento;
     private String documento;
     private String password;
-    private String datosGoogle;
+    private String datoGoogle;
+    private String datoGoogle2;
     private Boolean esCoordinador;
 
     // Getters y setters
@@ -94,13 +95,22 @@ public abstract class Usuario {
         this.password = password;
     }
 
-    public String getDatosGoogle() {
-        return datosGoogle;
+    public String getDatoGoogle() {
+        return datoGoogle;
     }
 
-    public void setDatosGoogle(String datosGoogle) {
-        this.datosGoogle = datosGoogle;
+    public void setDatoGoogle(String datosGoogle) {
+        this.datoGoogle = datosGoogle;
     }
+
+    public String getDatoGoogle2() {
+        return datoGoogle2;
+    }
+
+    public void setDatoGoogle2(String datosGoogle2) {
+        this.datoGoogle2 = datosGoogle2;
+    }
+
 
     public Boolean getEsCoordinador() {
         return esCoordinador;

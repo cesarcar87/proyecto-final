@@ -13,26 +13,41 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class MandarMailTutorias implements JavaDelegate {
 
     @Autowired
-    GoogleMailApi apiDeMails;
+    private GoogleMailApi apiDeMails;
 
     @Autowired
     GetUsuRepository getUsuRepository;
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
-        String estado = "";
         String newEstadoBeca = "";
         String asunto = "Tutorias Entre Pares";
-        String cuerpoMensaje = "La tutoría entre Par fue aceptada por el equipo de coordinacion estudiantil";
+        String cuerpoMensaje = "";
+
 
         System.out.println("Se mandan mails");
 
         Usuario estudianteTutor = getUsuRepository.getReferenceById((Long) delegateExecution.getVariable("idEstudianteTutor"));
 
-        //String estudiante = (String) delegateExecution.getVariable("correoEstudiante");
-        String estudiante = estudianteTutor.getCorreo();
+        Usuario estudianteTutorado = getUsuRepository.getReferenceById((Long) delegateExecution.getVariable("estudiante1"));
 
-        apiDeMails.enviarCorreo(estudiante,asunto,cuerpoMensaje);
-        delegateExecution.setVariable("estadoBeca",newEstadoBeca);
+        String estado = (String) delegateExecution.getVariable("estadoTutoria");
+        //Mensaje a mandar
+
+        if (estado.equals("Aceptado")) {
+            cuerpoMensaje = "La tutoría entre el estudiante tutor:" + estudianteTutor + " y el tutorado:" + estudianteTutorado + "   fue aceptada, Favor de establecer contacto ";
+            newEstadoBeca = "Aceptada";
+        } else {
+            cuerpoMensaje = "La tutoría entre el estudiante tutor:" + estudianteTutor + " y el tutorado:" + estudianteTutorado + "   fue Rechazada";
+            newEstadoBeca = "Rechazada";
+        }
+
+        String estudiante = estudianteTutor.getCorreo();
+        String estudanteTutorado = estudianteTutorado.getCorreo();
+
+        String correoCoordinador = (String) delegateExecution.getVariable("correoCoordinador");
+        apiDeMails.enviarCorreo(correoCoordinador,estudiante,asunto,cuerpoMensaje);
+        apiDeMails.enviarCorreo(correoCoordinador,estudanteTutorado,asunto,cuerpoMensaje);
+        delegateExecution.setVariable("estadoTutoria",newEstadoBeca);
     }
 }

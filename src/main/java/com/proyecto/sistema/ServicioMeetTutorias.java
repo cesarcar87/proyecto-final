@@ -18,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.glassfish.jersey.server.ServerProperties.APPLICATION_NAME;
@@ -64,23 +66,25 @@ public class ServicioMeetTutorias implements JavaDelegate {
         String DescripcionMeet = "Entrevista Coordinacion Estudiantil";
         String description = "Entrevista";
 
+        String correoCoordinador = (String) delegateExecution.getVariable("correoCoordinador");
+
         // Crear evento de Google Meet
-        String googleMeetEntrevista = crearEventoConGoogleMeet(DescripcionMeet, description, fechaEntrevista, fechaFinString);
+        String googleMeetEntrevista = crearEventoConGoogleMeet(correoCoordinador,CorreoEstudiante,DescripcionMeet, description, fechaEntrevista, fechaFinString);
 
         System.out.println("Se crean salas meet D");
 
         // Enviar correo
         String asunto = "Entrevista Google Meet";
         String cuerpoMensaje = "Se creó la cita en Google Calendar. Enlace para la reunión: " + googleMeetEntrevista;
-        googleMailApi.enviarCorreo(CorreoEstudiante, asunto, cuerpoMensaje);
 
 
+        googleMailApi.enviarCorreo(correoCoordinador,CorreoEstudiante, asunto, cuerpoMensaje);
         System.out.println("Se crean salas meet E");
     }
 
 
     // Método para crear una reunión en Google Calendar con Google Meet
-    public String crearEventoConGoogleMeet(String summary, String description, String fechaInicio, String fechaFin) throws Exception {
+    public String crearEventoConGoogleMeet(String correoCoordinador,String CorreoEstudiante,String summary, String description, String fechaInicio, String fechaFin) throws Exception {
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
 
@@ -112,6 +116,11 @@ public class ServicioMeetTutorias implements JavaDelegate {
         createConferenceRequest.setConferenceSolutionKey(conferenceSolutionKey);
         conferenceData.setCreateRequest(createConferenceRequest);
         event.setConferenceData(conferenceData);
+
+
+        // Configura los asistentes al evento
+        List<EventAttendee> attendees = new ArrayList<>();
+        attendees.add(new EventAttendee().setEmail(CorreoEstudiante));
 
         // Crear el evento en el calendario
         event = calendarService.events().insert("primary", event)
