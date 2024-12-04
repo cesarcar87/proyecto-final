@@ -233,7 +233,8 @@ public class BecaRest {
             @RequestParam Long idBeca,
             @RequestParam String estadoBeca,
             @RequestParam String tipoBeca,
-            @RequestParam String correoCoordinador) throws JsonProcessingException {
+            @RequestParam String correoCoordinador,
+            @RequestParam String mensajeCoordinador) throws JsonProcessingException {
         // Llamar al servicio para continuar con la beca
         System.out.println("Parametros de avanzarBeca");
         System.out.println(idEstudiante);
@@ -328,6 +329,8 @@ public class BecaRest {
         Map<String, Object> processVariables = new HashMap<>();
         processVariables.put("estadoBeca", estadoBecaVar);
         processVariables.put("correoCoordinador", Map.of("value", correoCoordinador));
+        processVariables.put("mensajeCoordinador", Map.of("value", mensajeCoordinador));
+
 
         // Crear el cuerpo de la solicitud
         Map<String, Object> body = new HashMap<>();
@@ -352,13 +355,14 @@ public class BecaRest {
     }
 
     @PostMapping("/avanzarBecaEntrevista")
-    public void AvanzarBeca(
+    public void AvanzarBecaEntrevista(
             @RequestParam Long idEstudiante,
             @RequestParam Long idBeca,
             @RequestParam String estadoBeca,
             @RequestParam String tipoBeca,
             @RequestParam String tipoEntrevista,
-            @RequestParam String fechaEntrevista) throws JsonProcessingException {
+            @RequestParam String fechaEntrevista,
+            @RequestParam String mensajeCoordinador) throws JsonProcessingException {
         // Llamar al servicio para continuar con la beca
         System.out.println("Parametros de avanzarBeca");
         System.out.println(idEstudiante);
@@ -431,11 +435,11 @@ public class BecaRest {
     }
 
     @PostMapping("/rechazarBeca")
-    public void AvanzarBeca(
+    public void RechazarBeca(
             @RequestParam Long idEstudiante,
             @RequestParam Long idBeca) throws JsonProcessingException {
         // Llamar al servicio para continuar con la beca
-        System.out.println("Parametros de avanzarBeca");
+        System.out.println("Parametros de rechazarBecas");
         System.out.println(idEstudiante);
         System.out.println(idBeca);
 
