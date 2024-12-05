@@ -7,10 +7,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface GetEstRepository  extends JpaRepository<Estudiante, Long> {
     @Query("SELECT e FROM Estudiante e WHERE e.correo = :correo")
     Estudiante findEstudianteByCorreo(@Param("correo") String correo);
-
-    Estudiante findByCorreo(String correo);
+    
+    Optional<Estudiante> findByDocumento(String cedula);
 }

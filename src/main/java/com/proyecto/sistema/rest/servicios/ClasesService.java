@@ -2,9 +2,17 @@ package com.proyecto.sistema.rest.servicios;
 
 import com.proyecto.sistema.clases.sistema.Clases;
 import com.proyecto.sistema.rest.repositorios.GetClasesRepository;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -68,4 +76,70 @@ public class ClasesService {
     public List<Clases> listarTodasLasClases() {
         return getClasesRepository.findAll();
     }
+
+    public void cargarClasesDesdeExcel(MultipartFile file) throws Exception {
+        System.out.println("Llega hasta aqui");
+
+        try (Workbook workbook = new XSSFWorkbook(file.getInputStream())) {
+            System.out.println("Ingresa al try");
+            Sheet sheet = workbook.getSheetAt(0); // Primera hoja del Excel
+            if (sheet == null) {
+                throw new Exception("La hoja del archivo está vacía o no existe.");
+            }
+
+            System.out.println("Pasa el tema de Sheets");
+            List<Clases> clases = new ArrayList<>();
+
+            for (Row row : sheet) {
+                if (row.getRowNum() == 0) continue; // Saltar la cabecera
+                System.out.println("Procesando fila: " + row.getRowNum());
+                Clases clase = new Clases();
+
+                try {
+                    clase.setHorario(getCellValue(row.getCell(0)));
+                    clase.setDia(getCellValue(row.getCell(1)));
+                    clase.setMateria(getCellValue(row.getCell(2)));
+                    clase.setMes(getCellValue(row.getCell(3)));
+                    clase.setCurso(getCellValue(row.getCell(4)));
+                    clase.setSemestre(getCellValue(row.getCell(5)));
+                    clase.setEnlacesGoogleMeet(getCellValue(row.getCell(6)));
+                    clases.add(clase);
+                    System.out.println("Clase agregada: " + clase);
+                } catch (Exception e) {
+                    System.err.println("Error al procesar la fila " + row.getRowNum() + ": " + e.getMessage());
+                }
+            }
+
+            System.out.println("pasa por aca");
+            if (clases.isEmpty()) {
+                throw new Exception("No se pudieron procesar las clases. Verifica el formato del archivo.");
+            }
+
+            getClasesRepository.saveAll(clases);
+            System.out.println("Clases guardadas con éxito.");
+        } catch (IOException e) {
+            System.err.println("Error al leer el archivo Excel: " + e.getMessage());
+            throw new Exception("Error al procesar el archivo Excel.");
+        }
+    }
+
+    // Método para manejar celdas nulas o con diferentes tipos de datos
+    private String getCellValue(Cell cell) {
+        if (cell == null) return "";
+        switch (cell.getCellType()) {
+            case STRING:  return cell.getStringCellValue();
+            case NUMERIC: return String.valueOf(cell.getNumericCellValue());
+            case BOOLEAN: return String.valueOf(cell.getBooleanCellValue());
+            default: return "";
+        }
+    }
+
+    public void actualizarEnlaceGoogleMeet(Long idClase, String nuevoEnlace) {
+        Clases clase = getClasesRepository.findById(idClase)
+                .orElseThrow(() -> new IllegalArgumentException("La clase con ID " + idClase + " no existe."));
+        clase.setEnlacesGoogleMeet(nuevoEnlace);
+        getClasesRepository.save(clase);
+    }
+
+
 }

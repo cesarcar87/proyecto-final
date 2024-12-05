@@ -33,4 +33,16 @@ public class TutEntreParesService {
     public UnidadCurricular obtgenerUC(Long idUc){
         return getUcRepository.getReferenceById(idUc);
     }
+
+    public TutEntrePar modificarTutorias(TutEntrePar tutEntrePar) {
+        // Verificar si la tutoría existe en la base de datos
+        TutEntrePar tutorExistente = getTutEntreParRespository.findById(tutEntrePar.getIdTutoria())
+                .orElseThrow(() -> new IllegalArgumentException("La tutoría no existe con el ID: " + tutEntrePar.getIdTutoria()));
+
+        tutorExistente.setEstadoTutoria(tutEntrePar.getEstadoTutoria());
+
+        // Guardar los cambios en la base de datos
+        return getTutEntreParRespository.save(tutorExistente);
+    }
+
 }

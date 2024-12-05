@@ -138,6 +138,13 @@ public class UsuarioService {
         }
     }
 
+    public Estudiante toggleTutor(String cedula) {
+        Estudiante estudiante = getEstRepository.findByDocumento(cedula)
+                .orElseThrow(() -> new RuntimeException("Estudiante no encontrado"));
+        estudiante.setEsTutor(!estudiante.getEsTutor());
+        return getEstRepository.save(estudiante);
+    }
+
 
 
 }

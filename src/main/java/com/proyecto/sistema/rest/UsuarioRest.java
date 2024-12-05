@@ -35,6 +35,8 @@ public class UsuarioRest {
     // Registrar un nuevo estudiante
     @PostMapping("/register")
     public Estudiante register(@RequestBody Estudiante newEstudiante) {
+        newEstudiante.setEsTutor(false);
+        newEstudiante.setEsCoordinador(false);
         return usuarioService.crearEstudiante(newEstudiante);
     }
 
@@ -67,4 +69,14 @@ public class UsuarioRest {
         return URLDecoder.decode(correoCodificado, StandardCharsets.UTF_8);
     }
 
+    @PutMapping("/{cedula}/toggleTutor")
+    public ResponseEntity<Estudiante> toggleTutor(@PathVariable String cedula) {
+        try {
+            Estudiante estudiante = usuarioService.toggleTutor(cedula);
+            return ResponseEntity.ok(estudiante);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+
+        }
+    }
 }

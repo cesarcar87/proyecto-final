@@ -237,9 +237,15 @@ public class BecaRest {
             @RequestParam String mensajeCoordinador) throws JsonProcessingException {
         // Llamar al servicio para continuar con la beca
         System.out.println("Parametros de avanzarBeca");
-        System.out.println(idEstudiante);
-        System.out.println(estadoBeca);
-        System.out.println(tipoBeca);
+
+        System.out.println("Parametros recibidos:");
+        System.out.println("idEstudiante: " + idEstudiante);
+        System.out.println("idBeca: " + idBeca);
+        System.out.println("estadoBeca: " + estadoBeca);
+        System.out.println("tipoBeca: " + tipoBeca);
+        System.out.println("correoCoordinador: " + correoCoordinador);
+        System.out.println("mensajeCoordinador: " + mensajeCoordinador);
+
 
         Becas BecaUpd = getBecRespository.getReferenceById(idBeca);
         String InstanceId = BuscarIntanceId(idBeca);

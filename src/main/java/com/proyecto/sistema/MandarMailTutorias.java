@@ -34,11 +34,11 @@ public class MandarMailTutorias implements JavaDelegate {
         String estado = (String) delegateExecution.getVariable("estadoTutoria");
         //Mensaje a mandar
 
-        if (estado.equals("Aceptado")) {
-            cuerpoMensaje = "La tutoría entre el estudiante tutor:" + estudianteTutor + " y el tutorado:" + estudianteTutorado + "   fue aceptada, Favor de establecer contacto ";
+        if (estado.equals("Aceptada")) {
+            cuerpoMensaje = "La tutoría entre el estudiante tutor: " + estudianteTutor.getCorreo() + " y el tutorado:" + estudianteTutorado.getCorreo() + "   fue aceptada, Favor de establecer contacto ";
             newEstadoBeca = "Aceptada";
-        } else {
-            cuerpoMensaje = "La tutoría entre el estudiante tutor:" + estudianteTutor + " y el tutorado:" + estudianteTutorado + "   fue Rechazada";
+        } else if(estado.equals("Rechazada")) {
+            cuerpoMensaje = "La tutoría entre el estudiante tutor: " + estudianteTutor.getCorreo() + " y el tutorado:" + estudianteTutorado.getCorreo() + "   fue Rechazada";
             newEstadoBeca = "Rechazada";
         }
 

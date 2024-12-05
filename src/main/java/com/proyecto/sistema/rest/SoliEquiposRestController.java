@@ -131,8 +131,6 @@ public class SoliEquiposRestController {
         }
     }
 
-
-
     @PostMapping("/avanzarSolicitud")
     public ResponseEntity<Map<String, String>> avanzarSolicitud(
             @RequestParam("idSolicitud") Long idSolicitud,

@@ -46,6 +46,7 @@ public class VerificaTutor  implements JavaDelegate {
 
         if (!error){
             tutEntrePar.setEstudianteTutor(estTutor.getId());
+            tutEntrePar.setEstadoTutoria("tutorHabilitado");
 
             getTutEntreParRespository.save(tutEntrePar);
 

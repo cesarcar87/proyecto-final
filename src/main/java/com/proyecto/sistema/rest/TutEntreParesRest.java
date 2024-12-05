@@ -152,6 +152,7 @@ public class TutEntreParesRest {
                     "value", idEstudianteTutor,
                     "type", "Long"
             );
+
             Map<String, Object> variables = Map.of("idEstudianteTutor", variableValue);
             Map<String, Object> body = Map.of("variables", variables);
 
@@ -178,13 +179,23 @@ public class TutEntreParesRest {
     }
 
     @PostMapping("/confirmarTutoria")
-    public ResponseEntity<String> confirmarTutoria(@RequestParam Long idTutEntrePar, @RequestParam String estadoTutoria, @RequestParam String correoCoordinador) {
+    public ResponseEntity<String> confirmarTutoria(
+            @RequestParam Long idTutEntrePar,
+            @RequestParam String estadoTutoria,
+            @RequestParam String correoCoordinador) {
+
         System.out.println("idTutEntrePar recibido: " + idTutEntrePar);
         System.out.println("estadoTutoria recibido: " + estadoTutoria);
+
         try {
             // Validar el parámetro estadoTutoria
             if (!estadoTutoria.equalsIgnoreCase("Aceptado") && !estadoTutoria.equalsIgnoreCase("Rechazado")) {
                 return ResponseEntity.badRequest().body("El estadoTutoria debe ser 'Aceptado' o 'Rechazado'.");
+            }
+
+            // Validar que correoCoordinador no sea nulo ni vacío
+            if (correoCoordinador == null || correoCoordinador.isEmpty()) {
+                return ResponseEntity.badRequest().body("El correo del coordinador no puede ser nulo o vacío.");
             }
 
             // Buscar la tutoría entre pares
@@ -217,9 +228,13 @@ public class TutEntreParesRest {
                     "type", "String"
             );
 
-            Map<String, Object> variables = Map.of("estadoTutoria", estadoTutoriaVar);
-            variables.put("correoCoordinador", correoCoordinador);
-            Map<String, Object> body = Map.of("variables", variables);
+            // Usar un HashMap para variables para que sea mutable
+            Map<String, Object> variables = new HashMap<>();
+            variables.put("estadoTutoria", estadoTutoriaVar);
+            variables.put("correoCoordinador", Map.of("value", correoCoordinador, "type", "String"));
+
+            Map<String, Object> body = new HashMap<>();
+            body.put("variables", variables);
 
             // URL para completar la tarea en Camunda
             String completeTaskUrl = "http://localhost:8080/engine-rest/task/" + processInstanceId + "/complete";
@@ -229,6 +244,9 @@ public class TutEntreParesRest {
 
             if (taskCompleteResponse.getStatusCode().is2xxSuccessful()) {
                 System.out.println("Tarea completada exitosamente.");
+                tutEntrePar.setEstadoTutoria(estadoTutoria);
+                tutEntreParesService.modificarTutorias(tutEntrePar);
+
                 return ResponseEntity.ok("La tarea fue completada exitosamente con estado: " + estadoCamunda);
             } else {
                 System.err.println("Error al completar la tarea: " + taskCompleteResponse.getBody());
@@ -236,13 +254,19 @@ public class TutEntreParesRest {
                         .body("Error al completar la tarea: " + taskCompleteResponse.getBody());
             }
 
+        } catch (IllegalArgumentException e) {
+            // Manejo de excepciones específicas
+            System.err.println("Error de validación: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
+
         } catch (Exception e) {
-            // Manejo de errores
+            // Manejo de errores generales
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Ocurrió un error inesperado: " + e.getMessage());
         }
     }
+
 
 
     public String BuscarIntanceId(String idCamunda) throws JsonProcessingException {
